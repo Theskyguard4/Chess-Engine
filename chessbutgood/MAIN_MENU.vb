@@ -40,4 +40,12 @@
         Form1.Show()
 
     End Sub
+
+    Private Sub Settingsbutton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Settingsbutton.Click
+        Settings_menu.Show()
+    End Sub
+
+    Private Sub Button1_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        compare_stockfish_perft_results("D:\fishtest.txt", "D:\stockfishresults.txt")
+    End Sub
 End Class

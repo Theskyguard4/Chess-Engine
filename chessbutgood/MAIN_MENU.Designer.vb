@@ -29,6 +29,7 @@ Partial Class MAIN_MENU
         Me.Settingsbutton = New System.Windows.Forms.Button()
         Me.FEN_CODE_BUTTON = New System.Windows.Forms.Button()
         Me.Calculate_moves_button = New System.Windows.Forms.Button()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'Pvpbutton
@@ -96,11 +97,21 @@ Partial Class MAIN_MENU
         Me.Calculate_moves_button.Text = "TEST: Calculate nodes"
         Me.Calculate_moves_button.UseVisualStyleBackColor = True
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(12, 210)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(110, 27)
+        Me.Button1.TabIndex = 7
+        Me.Button1.Text = "Button1"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'MAIN_MENU
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(319, 512)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Calculate_moves_button)
         Me.Controls.Add(Me.FEN_CODE_BUTTON)
         Me.Controls.Add(Me.Settingsbutton)
@@ -121,4 +132,5 @@ Partial Class MAIN_MENU
     Friend WithEvents Settingsbutton As System.Windows.Forms.Button
     Friend WithEvents FEN_CODE_BUTTON As System.Windows.Forms.Button
     Friend WithEvents Calculate_moves_button As System.Windows.Forms.Button
+    Friend WithEvents Button1 As System.Windows.Forms.Button
 End Class

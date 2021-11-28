@@ -23,9 +23,9 @@
                         Case 2
                             board(x, y) = makeeach("b", 0)
                         Case 3
-                            board(x, y) = makeeach("k", 0)
-                        Case 4
                             board(x, y) = makeeach("q", 0)
+                        Case 4
+                            board(x, y) = makeeach("k", 0)
                         Case 5
                             board(x, y) = makeeach("b", 0)
                         Case 6
@@ -47,9 +47,9 @@
                         Case 2
                             board(x, y) = makeeach("b", 1)
                         Case 3
-                            board(x, y) = makeeach("k", 1)
-                        Case 4
                             board(x, y) = makeeach("q", 1)
+                        Case 4
+                            board(x, y) = makeeach("k", 1)
                         Case 5
                             board(x, y) = makeeach("b", 1)
                         Case 6
@@ -123,10 +123,12 @@
     End Function
 
     Sub drawboard(ByVal board(,) As theboardclass)
+        Dim count As Integer = 1
         For y = 0 To 7
             For x = 0 To 7
-                board(x, y).getpiece.drawimage(x, y)
 
+                board(x, y).getpiece.drawimages(x, y, count)
+                count += 1
             Next
         Next
 

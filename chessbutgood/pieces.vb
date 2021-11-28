@@ -1,7 +1,7 @@
 ﻿Public Class pieces
     Protected images As PictureBox
-    Protected Team As Integer
-    Protected symbal As String
+    Protected Team As Byte
+    Protected symbal As Char
     Protected xpos As Integer
     Protected ypos As Integer
     Protected move As New List(Of Form1.position)
@@ -11,34 +11,45 @@
     Protected ispawnmovedtwospaces As Boolean = False
     Protected CanDoElPasent As Boolean
     Protected roundmoved2 As Integer
+    Protected IsAllowedToDoEnPasent As Boolean
     Protected hasmoved As Boolean = False
     Public Sub set_el_pasent(ByVal bool As Boolean)
-        CanDoElPasent = bool
+        Me.CanDoElPasent = bool
     End Sub
     Public Function return_el_pasent()
-    
+        'If Me.xpos = 4 And Me.ypos = 4 Then
+        '    MsgBox("")
+        'End If
+
         If Me.ispawnmovedtwospaces = True And (Form1.rounds + 1) - Me.roundmoved2 = 1 Then
             Return True
         End If
         Return False
     End Function
+    Public Function Get_isallowedtoalpasent()
+        Return IsAllowedToDoEnPasent
+    End Function
+
+    Public Sub Set_isallowedtoenpassent(ByVal bool)
+        Me.IsAllowedToDoEnPasent = bool
+    End Sub
     Public Function return_rounds_after_el_pas()
-        Return roundmoved2
+        Return Me.roundmoved2
     End Function
     Public Sub set_round_moved_2(ByVal num As Integer)
         Me.roundmoved2 = num
     End Sub
     Public Sub is_pawn_move_two_space_set(ByVal bool As Boolean)
-        ispawnmovedtwospaces = bool
+        Me.ispawnmovedtwospaces = bool
     End Sub
     Public Sub has_moved(ByVal bool As Boolean)
-        hasmoved = bool
+        Me.hasmoved = bool
     End Sub
     Public Function get_hasmoved()
-        Return hasmoved
+        Return Me.hasmoved
     End Function
     Public Function get_ispawnmovedtwo()
-        Return ispawnmovedtwospaces
+        Return Me.ispawnmovedtwospaces
     End Function
     Public Function get_value()
         Return Me.value
@@ -59,11 +70,41 @@
     Public Function getpin() As Boolean
         Return ispinned
     End Function
-    Private Sub moveto(ByVal sender As Object, ByVal e As EventArgs)
-
-    End Sub
     Public Sub setimageselected()
-        Me.images.Image = Image.FromFile("D:\documents\chessimages\selected.png")
+        Select Case Me.getsym
+            Case "p"
+                If Me.Team = 0 Then
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wpawnselected.png")
+                Else
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bpawnselected.png")
+                End If
+            Case "c"
+                If Me.Team = 0 Then
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wcastleselected.png")
+                Else
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bcastleselected.png")
+                End If
+            Case "b"
+                If Me.Team = 0 Then
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wbichselected.png")
+                Else
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bbichselected.png")
+                End If
+            Case "h"
+                If Me.Team = 0 Then
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "whorseselected.png")
+                Else
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bhorseselected.png")
+                End If
+            Case "q"
+                If Me.Team = 0 Then
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wqueenselected.png")
+                Else
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bqueenselected.png")
+                End If
+            Case "_"
+                Me.images.Image = Image.FromFile(Form1.selectedblankfile)
+        End Select
     End Sub
 
     Public Sub resetimage()
@@ -72,42 +113,42 @@
         Select Case s
             Case "p"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wpawn.png")
+                    Me.images.Image = Image.FromFile(Form1.whitepawnfile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bpawn.png")
+                    Me.images.Image = Image.FromFile(Form1.blackpawnfile)
                 End If
             Case "c"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wcastle.png")
+                    Me.images.Image = Image.FromFile(Form1.whitecastlefile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bcastle.png")
+                    Me.images.Image = Image.FromFile(Form1.blackcastlefile)
                 End If
             Case "h"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\whorse.png")
+                    Me.images.Image = Image.FromFile(Form1.whitehorsefile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bhorse.png")
+                    Me.images.Image = Image.FromFile(Form1.blackhorsefile)
                 End If
             Case "b"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\whitebich.png")
+                    Me.images.Image = Image.FromFile(Form1.whitebishopfile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bbich.png")
+                    Me.images.Image = Image.FromFile(Form1.blackbishopfile)
                 End If
             Case "q"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wqueen.png")
+                    Me.images.Image = Image.FromFile(Form1.whitequeenfile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bqueen.png")
+                    Me.images.Image = Image.FromFile(Form1.blackqueenfile)
                 End If
             Case "k"
                 If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wking.png")
+                    Me.images.Image = Image.FromFile(Form1.whitekingfile)
                 Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bking.png")
+                    Me.images.Image = Image.FromFile(Form1.blackkingfile)
                 End If
             Case "_"
-                Me.images.Image = Image.FromFile("D:\documents\chessimages\blankse.png")
+                Me.images.Image = Image.FromFile(Form1.blankfile)
         End Select
 
 
@@ -174,23 +215,25 @@
                 Me.drawavaliblemoves(Me.move)
             Else
                 If Me.ispickedokay = True Then
-
-                    If Form1.board(Form1.pieceselected.getx, Form1.pieceselected.gety).getmoves(get_move_number(Form1.pieceselected.getx, Form1.pieceselected.gety, Me.getx, Me.gety)).iscastling = True Then
-
-                        Me.Change_castling_pos(Form1.pieceselected.getteam, Form1.pieceselected.getx, Me.getx)
-                        changeboard.changepiecetowhere(Me.getsym, Me.getteam, Me.xpos, Me.gety, Form1.pieceselected.getx, Form1.pieceselected.gety, True, True)
-
-
-                    ElseIf Form1.board(Form1.pieceselected.getx, Form1.pieceselected.gety).getmoves(get_move_number(Form1.pieceselected.getx, Form1.pieceselected.gety, Me.getx, Me.gety)).IsAlPasentMove = True Then
-                        Me.change_al_pasent(Me.getx, Me.gety, Form1.pieceselected.getteam)
-                        changeboard.changepiecetowhere(Me.getsym, Me.getteam, Me.xpos, Me.gety, Form1.pieceselected.getx, Form1.pieceselected.gety, True, False)
-                    Else
-                        changeboard.changepiecetowhere(Me.getsym, Me.getteam, Me.xpos, Me.gety, Form1.pieceselected.getx, Form1.pieceselected.gety, True, False)
+                    Dim pos As Form1.position
+                    pos.x = Me.xpos
+                    pos.y = Me.ypos
+                    pos.sym = Me.symbal
+                    pos.team = Me.Team
+                    If Form1.pieceselected.symbal = "k" And (Me.xpos = Form1.pieceselected.xpos + 2 Or Me.xpos = Form1.pieceselected.xpos - 2) Then
+                        pos.SpecialMove = 2
                     End If
+                    If Form1.pieceselected.symbal = "p" Then
+                        If Me.xpos <> Form1.pieceselected.xpos And Me.symbal = "_" Then
+                            pos.SpecialMove = 1
+                        End If
+                    End If
+
+                    changeboard.efficient_change_board(Form1.board, convert_pos_to_move(pos))
 
                     If Me.getsym = "p" Then
                         If Me.getteam = 0 And Me.gety = 7 Then
-                            If Form1.settings.Playing_Agaisnt_AI <> True And Me.getteam <> Form1.AIPLAYER.get_team Then
+                            If Form1.settings.Playing_Agaisnt_AI <> True Then
                                 Promotion.team_of_proting_pawn = 0
                                 Promotion.promotion_place.x = Me.getx
                                 Promotion.promotion_place.y = Me.gety
@@ -198,12 +241,28 @@
                                 Do Until Form1.confirmed = True
                                     Application.DoEvents()
                                 Loop
+                            Else
+                                If Form1.AIPLAYER.get_team <> Me.getteam Then
+
+                                    Promotion.team_of_proting_pawn = 0
+                                    Promotion.promotion_place.x = Me.getx
+                                    Promotion.promotion_place.y = Me.gety
+                                    Promotion.Show()
+                                    Do Until Form1.confirmed = True
+                                        Application.DoEvents()
+                                    Loop
+
+
+
+
+
+                                End If
                             End If
 
 
                         ElseIf Me.getteam = 1 And Me.gety = 0 Then
+                            If Form1.settings.Playing_Agaisnt_AI = False Then
 
-                            If Form1.settings.Playing_Agaisnt_AI <> True And Me.getteam <> Form1.AIPLAYER.get_team Then
                                 Promotion.team_of_proting_pawn = 1
                                 Promotion.promotion_place.x = Me.getx
                                 Promotion.promotion_place.y = Me.gety
@@ -211,8 +270,26 @@
                                 Do Until Form1.confirmed = True
                                     Application.DoEvents()
                                 Loop
-                            End If
+                            Else
 
+
+                                If Form1.AIPLAYER.get_team <> Me.getteam Then
+
+                                    Promotion.team_of_proting_pawn = 1
+                                    Promotion.promotion_place.x = Me.getx
+                                    Promotion.promotion_place.y = Me.gety
+                                    Promotion.Show()
+                                    Do Until Form1.confirmed = True
+                                        Application.DoEvents()
+                                    Loop
+
+
+
+
+
+                                End If
+
+                            End If
 
 
                         End If
@@ -227,6 +304,24 @@
 
 
     End Sub
+    Private Function convert_pos_to_move(ByVal position As Form1.position)
+        Dim move As Form1.Efficient_moves
+        move.origin.x = Form1.pieceselected.xpos
+        move.origin.y = Form1.pieceselected.ypos
+        move.origin.sym = Form1.pieceselected.symbal
+        move.origin.team = Form1.pieceselected.Team
+
+
+        move.target.x = position.x
+        move.target.y = position.y
+        move.target.sym = position.sym
+        move.target.team = position.team
+
+
+        move.SpecialMoveFlag = position.SpecialMove
+
+        Return move
+    End Function
     Private Sub change_al_pasent(ByVal movex As Integer, ByVal movey As Integer, ByVal teamtaking As Integer)
         Select Case teamtaking
             Case 0
@@ -331,6 +426,7 @@
                 'up left
 
                 yy -= 1
+
                 For xx = Me.getx - 1 To Form1.incheckpiece.kingmove.x + 1 Step -1
                     If Form1.board(xx, yy).getsym = "_" Then
 
@@ -341,7 +437,7 @@
                         Form1.incheckpiece.direction = "upleft"
 
                     End If
-                    If yy < Form1.incheckpiece.kingmove.x + 1 Then
+                    If yy < Form1.incheckpiece.kingmove.y + 1 Then
                         xx = 0
                     End If
                     yy -= 1
@@ -372,7 +468,7 @@
                         Form1.incheckpiece.direction = "upright"
 
                     End If
-                    If yy < Form1.incheckpiece.kingmove.x + 1 Then
+                    If yy < Form1.incheckpiece.kingmove.y + 1 Then
                         xx = 7
                     End If
                     yy -= 1
@@ -476,18 +572,26 @@
 
 
 
+        If Form1.board(x, y).getsym <> "k" Then
+            Me.movesave.x = x
+            Me.movesave.y = y
+            If castlingbool = True Then
+                Me.movesave.SpecialMove = 2
+                Me.movesave.Letter = Form1.CastlePublicLetter
+            Else
+                Me.movesave.SpecialMove = 0
+            End If
+            If isAlPasent = True Then
+                Me.movesave.SpecialMove = 1
+            End If
 
 
-
-
-        Me.movesave.x = x
-        Me.movesave.y = y
-        Me.movesave.iscastling = castlingbool
-        Me.movesave.IsAlPasentMove = isAlPasent
-        If Form1.whosgo = 0 And Form1.rounds = 2 Then
-            'MsgBox("")
+            Me.move.Add(Me.movesave)
         End If
-        Me.move.Add(movesave)
+
+
+
+        
 
 
 
@@ -498,9 +602,33 @@
     Public Function getmoves() As List(Of Form1.position)
         Return Me.move
     End Function
-    Public Sub drawimage(ByVal x, ByVal y)
+    Public Sub set_image_p(ByVal path)
+        Me.images.Image = Image.FromFile(path)
+    End Sub
+    Public Sub changekingtochecked(ByVal x, ByVal y)
+        If Form1.checked = True And Form1.board(x, y).getsym = "k" Then
+
+            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(Form1.AssetFolderPath & "wking.png")
+            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(Form1.AssetFolderPath & "bking.png")
+            Select Case Me.Team
+                Case 0
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wkingchecked.png")
+                Case 1
+                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bkingchecked.png")
+            End Select
+
+
+        Else
+            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(Form1.AssetFolderPath & "wking.png")
+            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(Form1.AssetFolderPath & "bking.png")
+        End If
+    End Sub
+    Public Sub drawimages(ByVal x, ByVal y, ByVal count)
         setxy(x, y)
-        Me.images.SetBounds((x * 76) + 180, (y * 76) + 40, 60, 60)
+
+ 
+
+        Me.images.SetBounds((x * 76) + 175 + (x * 1.1), (y * 76) + 40 + (y * 1.1), 76, 76)
         Me.images.BackgroundImageLayout = ImageLayout.Stretch
         Me.images.BackColor = Color.Transparent
         AddHandler Me.images.Click, AddressOf PictureBox1_Click
@@ -531,71 +659,62 @@
 
         Me.Team = t
         Me.symbal = s
-        If Form1.rounds = 0 Then
-            Me.images = New PictureBox
+        If Form1.is_ai_calulating = False Then
+            If Form1.rounds = 0 Then
+                Me.hasmoved = False
+                Me.images = New PictureBox
+
+            End If
+
+
+            Select Case s
+                Case "p"
+                    Me.set_value(Form1.pawnvalue)
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitepawnfile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackpawnfile)
+                    End If
+                Case "c"
+                    Me.set_value(Form1.castlevalue)
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitecastlefile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackcastlefile)
+                    End If
+                Case "h"
+                    Me.set_value(Form1.horsevalue)
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitehorsefile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackhorsefile)
+                    End If
+                Case "b"
+                    Me.set_value(Form1.bishopvalue)
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitebishopfile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackbishopfile)
+                    End If
+                Case "q"
+                    Me.set_value(Form1.queenvalue)
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitequeenfile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackqueenfile)
+                    End If
+                Case "k"
+                    If t = 0 Then
+                        Me.images.Image = Image.FromFile(Form1.whitekingfile)
+                    Else
+                        Me.images.Image = Image.FromFile(Form1.blackkingfile)
+                    End If
+                Case "_"
+                    Me.images.Image = Image.FromFile(Form1.blankfile)
+            End Select
+
         End If
-
-        Select Case Me.symbal
-            Case "p"
-                Me.set_value(Form1.pawnvalue)
-
-
-                If t = 0 Then
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wpawn.png")
-                Else
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bpawn.png")
-                End If
-            Case "c"
-                Me.set_value(Form1.castlevalue)
-                If t = 0 Then
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wcastle.png")
-                Else
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bcastle.png")
-                End If
-            Case "h"
-                Me.set_value(Form1.horsevalue)
-                If t = 0 Then
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\whorse.png")
-                Else
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bhorse.png")
-                End If
-            Case "b"
-                Me.set_value(Form1.bishopvalue)
-                If t = 0 Then
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\whitebich.png")
-                Else
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bbich.png")
-                End If
-            Case "q"
-                Me.set_value(Form1.queenvalue)
-                If t = 0 Then
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wqueen.png")
-                Else
-
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bqueen.png")
-                End If
-            Case "k"
-                If t = 0 Then
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\wking.png")
-                Else
-                    Me.images.Image = Image.FromFile("D:\documents\chessimages\bking.png")
-                End If
-            Case "_"
-
-                Me.images.Image = Image.FromFile("D:\documents\chessimages\blankse.png")
-
-
-        End Select
-
+        
 
     End Sub
     Public Sub setmoves(ByVal mov As List(Of Form1.position))

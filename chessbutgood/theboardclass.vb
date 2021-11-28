@@ -34,45 +34,27 @@
     Public Sub setimageselected()
         Me.piece.setimageselected()
     End Sub
-
-
     Public Sub set_value(ByVal values)
         Me.piece.set_value(values)
     End Sub
     Public Sub calculatemoves(ByVal board(,) As theboardclass, ByVal whosgo As Integer)
         Dim oppteam As Integer
-        'Me.piece.resetmoves()
-        'If Me.getx = 6 And Me.gety = 3 And Form1.is_ai_calulating = False Then
-        '    MsgBox(board(3, 1).getmoves.Count & "")
-        'End If
 
-
-
-
-
-        'If Me.getsym = "p" Then
-        '    MsgBox("pawn")
-        'End If
         If Me.piece.getteam = 0 Then
             oppteam = 1
         Else
             oppteam = 0
         End If
 
-
         Select Case Me.piece.getsym
             Case "c"
                 Me.getstraightmoves(oppteam, board)
                 '----------------------------------------------------------------------------------
             Case "p"
-
                 Me.getpawnmoves(oppteam, board)
-
                 '----------------------------------------------------------------------------------
             Case "h"
-
                 Me.gethorsemoves(oppteam, board)
-
                 '----------------------------------------------------------------------------------
             Case "b"
                 Me.getdiagonalmove(oppteam, board)
@@ -83,16 +65,18 @@
                 '----------------------------------------------------------------------------------
             Case "k"
                 Me.calculatekingmoves(board, whosgo)
-
         End Select
+    End Sub
+    Public Sub set_has_moved_2(ByVal bool)
+        Me.piece.is_pawn_move_two_space_set(bool)
 
-        'Return Me.piece.getmoves
+    End Sub
+    Public Sub Change_king_p(ByVal x, ByVal y)
+        Me.piece.changekingtochecked(x, y)
     End Sub
     
     Private Sub kingmoves(ByVal x As Integer, ByVal y As Integer, ByVal iscastling As Boolean)
         Dim isokay As Boolean = False
-
-        
         If Form1.first_time = False Then
             If Me.getteam = 1 Then
 
@@ -147,7 +131,6 @@
                             If x = Me.getx + 1 And y = Me.gety - 1 Then
                                 isokay = True
                             End If
-
                     End Select
                 End If
                 
@@ -155,17 +138,15 @@
 
                 
             End If
+
+
             If isokay = False Then
                 If Form1.board(x, y).getsym <> "k" Then
-                    
                     Me.piece.addmoves(x, y, iscastling, False)
-                    
-
-
-
-
                 End If
             End If
+
+
         Else
             Dim newpos As Form1.position
             newpos.x = x
@@ -189,6 +170,9 @@
     Public Sub addcheckmoves(ByVal x, ByVal y)
         Me.piece.addcheckmoves(x, y)
     End Sub
+    Public Sub set_image(ByVal path As String)
+
+    End Sub
     Public Function getmoves() As List(Of Form1.position)
 
         Return Me.piece.getmoves
@@ -204,15 +188,27 @@
         If Form1.first_time = False Then
             Select Case Me.getteam
                 Case 0
-                    'left
-                    If Me.piece.get_hasmoved = False And Form1.board(0, 0).getsym = "c" And Form1.board(0, 0).Get_hasmoved = False And Form1.whitecastled = False Then
-                        For x = Me.getx - 1 To 1 Step -1
-                            If Form1.board(x, 0).getsym <> "_" Then
-                                isokay = True
-                            End If
 
+                    'left
+                    isokay = False
+                    If Me.piece.get_hasmoved = False And Form1.board(0, 0).getsym = "c" And Form1.board(0, 0).Get_hasmoved = False Then
+
+                        For x = Me.getx - 1 To 1 Step -1
+                            For Each M In Form1.onelistofincheckplaces
+                                If Form1.board(x, 0).getsym <> "_" Or M.x = x And M.y = 0 Then
+
+                                    If isokay = True Then
+                                        Exit For
+                                    End If
+                                    If x <> 1 Or Form1.board(x, 0).getsym <> "_" Then
+                                        isokay = True
+                                    End If
+
+                                End If
+                            Next
                         Next
                         If isokay = False Then
+                            Form1.CastlePublicLetter &= "Q"
 
                             Me.kingmoves(Me.getx - 2, 0, True)
 
@@ -220,15 +216,24 @@
 
                     End If
                     'right
-                 
-                    If Me.piece.get_hasmoved = False And Form1.board(7, 0).getsym = "c" And Form1.board(7, 0).Get_hasmoved = False And Form1.whitecastled = False Then
-                        For x = Me.getx + 1 To 6
-                            If Form1.board(x, 0).getsym <> "_" Then
-                                isokay = True
-                            End If
+                    isokay = False
 
+                    If Me.piece.get_hasmoved = False And Form1.board(7, 0).getsym = "c" And Form1.board(7, 0).Get_hasmoved = False Then
+
+
+                        For x = Me.getx + 1 To 6
+                            For Each M In Form1.onelistofincheckplaces
+                                If Form1.board(x, 0).getsym <> "_" Or M.x = x And M.y = 0 Then
+                                    If isokay = True Then
+                                        Exit For
+                                    End If
+
+                                    isokay = True
+                                End If
+                            Next
                         Next
                         If isokay = False Then
+                            Form1.CastlePublicLetter &= "K"
 
                             Me.kingmoves(Me.getx + 2, 0, True)
 
@@ -237,65 +242,87 @@
 
                     End If
                 Case 1
-                    'left
-                    If Me.piece.get_hasmoved = False And Form1.board(0, 7).getsym = "c" And Form1.board(0, 7).Get_hasmoved = False And Form1.blackcastled = False Then
-                        For x = Me.getx - 1 To 1 Step -1
-                            If Form1.board(x, 7).getsym <> "_" Then
-                                isokay = True
-                            End If
 
+                    'left
+                    isokay = False
+                    If Me.piece.get_hasmoved = False And Form1.board(0, 7).getsym = "c" And Form1.board(0, 7).Get_hasmoved = False Then
+
+                        For x = Me.getx - 1 To 1 Step -1
+                            For Each M In Form1.zerolistofincheckplaces
+                                If Form1.board(x, 7).getsym <> "_" Or M.x = x And M.y = 7 Then
+                                    If isokay = True Then
+                                        Exit For
+                                    End If
+
+                                    isokay = True
+                                End If
+                            Next
                         Next
                         If isokay = False Then
+                            Form1.CastlePublicLetter &= "q"
 
                             Me.kingmoves(Me.getx - 2, 7, True)
-                            Form1.usefulcounter += 1
+
 
                         End If
 
                     End If
                     'right
-                    If Me.piece.get_hasmoved = False And Form1.board(7, 7).getsym = "c" And Form1.board(7, 7).Get_hasmoved = False And Form1.whitecastled = False Then
+                    isokay = False
+                    If Me.piece.get_hasmoved = False And Form1.board(7, 7).getsym = "c" And Form1.board(7, 7).Get_hasmoved = False Then
+
                         For x = Me.getx + 1 To 6
-                            If Form1.board(x, 7).getsym <> "_" Then
-                                isokay = True
-                            End If
+                            For Each M In Form1.zerolistofincheckplaces
+                                If Form1.board(x, 7).getsym <> "_" Or M.x = x And M.y = 7 Then
+                                    If isokay = True Then
+                                        Exit For
+                                    End If
+                                    If x <> 1 Or Form1.board(x, 7).getsym <> "_" Then
+                                        isokay = True
+                                    End If
+
+
+                                End If
+                            Next
+
 
                         Next
                         If isokay = False Then
+                            Form1.CastlePublicLetter &= "k"
 
                             Me.kingmoves(Me.getx + 2, 7, True)
-                            Form1.usefulcounter += 1
+
                         End If
 
                     End If
             End Select
 
+
         End If
 
 
-
-
-
-
-        If Me.piece.getx - 1 > 0 And Me.piece.gety - 1 > 0 Then
+        If Me.piece.getx - 1 >= 0 And Me.piece.gety - 1 >= 0 Then
             If board(Me.piece.getx - 1, Me.piece.gety - 1).getteam <> Me.getteam Then
                 Me.kingmoves(Me.piece.getx - 1, Me.piece.gety - 1, False)
             End If
         End If
-        If Me.piece.getx + 1 < 7 And Me.piece.gety - 1 > 0 Then
+
+
+        If Me.piece.getx + 1 <= 7 And Me.piece.gety - 1 >= 0 Then
             If board(Me.piece.getx + 1, Me.piece.gety - 1).getteam <> Me.getteam Then
+
                 Me.kingmoves(Me.piece.getx + 1, Me.piece.gety - 1, False)
             End If
         End If
 
 
-        If Me.piece.getx - 1 > 0 And Me.piece.gety + 1 < 7 Then
+        If Me.piece.getx - 1 >= 0 And Me.piece.gety + 1 <= 7 Then
             If board(Me.piece.getx - 1, Me.piece.gety + 1).getteam <> Me.getteam Then
                 Me.kingmoves(Me.piece.getx - 1, Me.piece.gety + 1, False)
             End If
         End If
 
-        If Me.piece.getx + 1 < 7 And Me.piece.gety + 1 < 7 Then
+        If Me.piece.getx + 1 <= 7 And Me.piece.gety + 1 <= 7 Then
             If board(Me.piece.getx + 1, Me.piece.gety + 1).getteam <> Me.getteam Then
                 Me.kingmoves(Me.piece.getx + 1, Me.piece.gety + 1, False)
             End If
@@ -327,6 +354,10 @@
                 Me.kingmoves(Me.piece.getx, Me.piece.gety + 1, False)
             End If
         End If
+
+
+
+        
 
     End Sub
 
@@ -473,6 +504,9 @@
     Public Function can_el_pasentfunc()
         Return Me.piece.return_el_pasent
     End Function
+    Public Sub set_round_2_moves(ByVal num As Integer)
+        Me.piece.set_round_moved_2(num)
+    End Sub
     Private Sub gethorsemoves(ByVal oppteam As Integer, ByVal board(,) As theboardclass)
         
         For x = -2 To 2
@@ -523,8 +557,10 @@
                 If board(x, y).getsym = "k" Then
 
                     For ii = Me.piece.getmoves.Count - 1 - count To Me.piece.getmoves.Count - 1
+                        If ii >= 0 Then
+                            Form1.incheckpiece.moves.Add(Me.piece.getmoves(ii))
+                        End If
 
-                        Form1.incheckpiece.moves.Add(Me.piece.getmoves(ii))
                     Next
                 Else
                     Dim xx As Integer = x
@@ -697,6 +733,9 @@
 
     End Sub
     Private Sub getstraightmoves(ByVal oppteam As Integer, ByVal board(,) As theboardclass)
+        Dim isokay As Boolean = False
+        Dim whpawncount As Integer = 0
+        Dim blpawncount As Integer = 0
         'right
         Dim new_pos As Form1.position
         For x = Me.piece.getx + 1 To 7
@@ -708,7 +747,7 @@
                 Me.piece.addunderattack(x, Me.piece.gety)
 
                 For xx = Me.piece.getx + 1 To x
-                    
+
                     new_pos.x = xx
                     new_pos.y = Me.piece.gety
                     Form1.incheckpiece.moves.Add(new_pos)
@@ -717,28 +756,23 @@
             ElseIf board(x, Me.piece.gety).piece.getteam = oppteam Then
 
                 Me.piece.addmoves(x, Me.piece.gety, False, False)
+
                 Me.piece.addunderattack(x, Me.piece.gety)
+
+
                 For ii = x + 1 To 7
                     If board(ii, Me.piece.gety).getteam = oppteam And board(ii, Me.piece.gety).getsym = "k" Then
                         If Me.getteam = 0 Then
-                            
+
                             new_pos.x = x
                             new_pos.y = Me.piece.gety
                             Form1.pinned.teamwhite.Add(new_pos)
 
-
-
-
-                            
                             new_pos.x = Me.piece.getx
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningwhite.Add(new_pos)
 
-
-
-
                         ElseIf Me.getteam = 1 Then
-
 
                             new_pos.x = x
                             new_pos.y = Me.piece.gety
@@ -747,15 +781,40 @@
                             new_pos.x = Me.piece.getx
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningblack.Add(new_pos)
-                            
-                            
+
                         End If
-                    ElseIf board(ii, Me.piece.gety).getteam = Me.piece.getteam Then
+                    ElseIf board(ii, Me.piece.gety).getteam = Me.getteam Then
+                        'If board(ii, Me.piece.gety).getsym = "p" Then
+
+                        '    If board(ii + 1, Me.piece.gety).getsym = "p" Then
+                        '        Select Case board(ii, Me.piece.gety).getteam
+                        '            Case 0
+                        '                If board(ii + 1, Me.piece.gety).getteam = 1 Then
+                        '                    board(ii + 1, Me.piece.gety).set_has_moved_2(False)
+                        '                    board(ii, Me.piece.gety).set_has_moved_2(False)
+                        '                    board(ii + 1, Me.piece.gety).calculatemoves(Form1.board, Me.getteam)
+                        '                    board(ii, Me.piece.gety).calculatemoves(Form1.board, Me.getteam)
+                        '                End If
+                        '            Case 1
+                        '                If board(ii + 1, Me.piece.gety).getteam = 0 Then
+                        '                    board(ii + 1, Me.piece.gety).set_has_moved_2(False)
+                        '                    board(ii, Me.piece.gety).set_has_moved_2(False)
+
+                        '                End If
+
+                        '        End Select
+                        '    End If
+                        'End If
                         ii = 7
-                    End If
+
+
+
+
+                        End If
                 Next
                 x = 7
             Else
+              
                 Me.piece.addunderattack(x, Me.piece.gety)
                 x = 7
             End If
@@ -774,7 +833,7 @@
 
 
                 For xx = Me.piece.getx - 1 To x Step -1
-                    
+
                     new_pos.x = xx
                     new_pos.y = Me.piece.gety
                     Form1.incheckpiece.moves.Add(new_pos)
@@ -785,19 +844,19 @@
                 For ii = x - 1 To 0 Step -1
                     If board(ii, Me.piece.gety).getteam = oppteam And board(ii, Me.piece.gety).getsym = "k" Then
                         If Me.getteam = 0 Then
-                         
+
 
                             new_pos.x = x
                             new_pos.y = Me.piece.gety
                             Form1.pinned.teamwhite.Add(new_pos)
-                            
+
 
                             new_pos.x = Me.piece.getx
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningwhite.Add(new_pos)
                         ElseIf Me.getteam = 1 Then
 
-                            
+
 
                             new_pos.x = x
                             new_pos.y = Me.piece.gety
@@ -812,9 +871,11 @@
                     End If
                 Next
                 Me.piece.addmoves(x, Me.piece.gety, False, False)
+
                 Me.piece.addunderattack(x, Me.piece.gety)
                 x = 0
             Else
+
                 Me.piece.addunderattack(x, Me.piece.gety)
                 x = 0
             End If
@@ -832,7 +893,7 @@
                 Me.piece.addunderattack(Me.piece.getx, y)
 
                 For yy = Me.piece.gety + 1 To y
-                    
+
                     new_pos.x = Me.piece.getx
                     new_pos.y = yy
                     Form1.incheckpiece.moves.Add(new_pos)
@@ -846,7 +907,7 @@
                 For ii = y + 1 To 7
                     If board(Me.piece.getx, ii).getteam = oppteam And board(Me.piece.getx, ii).getsym = "k" Then
                         If Me.getteam = 0 Then
-                            
+
 
                             new_pos.x = Me.piece.getx
                             new_pos.y = y
@@ -855,7 +916,7 @@
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningwhite.Add(new_pos)
                         ElseIf Me.getteam = 1 Then
-                            
+
 
                             new_pos.x = Me.piece.getx
                             new_pos.y = y
@@ -884,7 +945,7 @@
                 Me.piece.addunderattack(Me.piece.getx, y)
 
                 For yy = Me.piece.gety + 1 To y
-                    
+
                     new_pos.x = Me.piece.getx
                     new_pos.y = yy
                     Form1.incheckpiece.moves.Add(new_pos)
@@ -898,7 +959,7 @@
                 For ii = y - 1 To 0 Step -1
                     If board(Me.piece.getx, ii).getteam = oppteam And board(Me.piece.getx, ii).getsym = "k" Then
                         If Me.getteam = 0 Then
-                            
+
                             new_pos.x = Me.piece.getx
                             new_pos.y = y
                             Form1.pinned.teamwhite.Add(new_pos)
@@ -906,7 +967,7 @@
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningwhite.Add(new_pos)
                         ElseIf Me.getteam = 1 Then
-                           
+
                             new_pos.x = Me.piece.getx
                             new_pos.y = y
                             Form1.pinned.teamblack.Add(new_pos)

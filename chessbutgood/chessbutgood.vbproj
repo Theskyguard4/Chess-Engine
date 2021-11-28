@@ -15,6 +15,21 @@
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -76,6 +91,7 @@
     <Compile Include="CalBoard.vb" />
     <Compile Include="changeboard.vb" />
     <Compile Include="Class1.vb" />
+    <Compile Include="compare.vb" />
     <Compile Include="Confirm_promotion.Designer.vb">
       <DependentUpon>Confirm_promotion.vb</DependentUpon>
     </Compile>
@@ -84,6 +100,7 @@
     </Compile>
     <Compile Include="connecter.vb" />
     <Compile Include="createboard.vb" />
+    <Compile Include="EvaluationCodeMODULE.vb" />
     <Compile Include="FEN_Code.vb" />
     <Compile Include="FEN_LIST.Designer.vb">
       <DependentUpon>FEN_LIST.vb</DependentUpon>
@@ -91,6 +108,7 @@
     <Compile Include="FEN_LIST.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ficsfileconverter.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -111,6 +129,7 @@
     <Compile Include="MAIN_MENU.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MiniMaxModule.vb" />
     <Compile Include="Module1.vb" />
     <Compile Include="moves.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -135,7 +154,14 @@
     <Compile Include="Promotion.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Settings_menu.Designer.vb">
+      <DependentUpon>Settings_menu.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Settings_menu.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="theboardclass.vb" />
+    <Compile Include="ZobristHashingModule.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Confirm_promotion.resx">
@@ -162,6 +188,9 @@
     <EmbeddedResource Include="Promotion.resx">
       <DependentUpon>Promotion.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Settings_menu.resx">
+      <DependentUpon>Settings_menu.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="My Project\Application.myapp">
@@ -173,6 +202,28 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
