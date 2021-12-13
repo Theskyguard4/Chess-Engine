@@ -17,7 +17,21 @@
     'values of each piece
     Private ListOfAllMasterGames As New List(Of String)
     Private ListofStarterMovesString As New List(Of String)
-    Private ListOfStarterMoves As New List(Of Form1.Efficient_moves)
+    Private ListOfStarterMoves() As String
+
+    Public Sub setListOfStarterMoves(ByVal List() As String)
+        Me.ListOfStarterMoves = List
+    End Sub
+    Public Function GetOpeningMovelist()
+        Dim str As String
+        For Each M In Me.ListOfStarterMoves
+            str &= M & " "
+        Next
+        Return str
+    End Function
+    Public Function GetBookMove(ByVal IndexOfMove As Integer)
+        Return Me.ListOfStarterMoves(IndexOfMove)
+    End Function
 
 
     Structure Moves
@@ -42,7 +56,7 @@
     End Function
     Public Sub New(ByVal Difficulty As String)
         set_AIlevel(Difficulty)
-        Me.ListOfAllMasterGames = ficsfileconverter.ConvertFileFromFicsRAWToEachLine(Form1.AssetFolderPath & "grandmastergames.PGN", Me.ListOfAllMasterGames)
+
     End Sub
     Public Sub set_AIlevel(ByVal difficulty As String)
 
@@ -904,7 +918,7 @@
         If Move.origin.sym = "" Then
             MsgBox("GAME ERROR: No Move Given (CODE: 1)")
         End If
-        Label_text &= "Nodes Checked: " & count & vbCrLf & "Move piece: " & Move.origin.sym & vbCrLf & "From: " & Move.origin.x & "," & Move.origin.y & vbCrLf & "To: " & Move.target.x & "," & Move.target.y & vbCrLf & "Target Sqr: " & Move.target.sym & vbCrLf & "Castling Rights: " & Form1.board_info.castlingrights & vbCrLf & "Score: " & score & vbCrLf & "Depth: " & depth & vbCrLf & "Book Move: " & isbookmove & vbCrLf & "Change Count: " & Form1.changboardcount & vbCrLf & "Time Taken: " & time / 10 & "s"
+        Label_text &= "Nodes Checked: " & count & vbCrLf & "Move piece: " & Move.origin.sym & vbCrLf & "From: " & Move.origin.x & "," & Move.origin.y & vbCrLf & "To: " & Move.target.x & "," & Move.target.y & vbCrLf & "Target Sqr: " & Move.target.sym & vbCrLf & "Castling Rights: " & Form1.board_info.castlingrights & vbCrLf & "Score: " & score & vbCrLf & "Depth: " & depth & vbCrLf & "Book Move: " & isbookmove & vbCrLf & "Change Count: " & Form1.changboardcount & vbCrLf & "Time Taken: " & time / 10 & "s" & vbCrLf & "TT Hits: " & Form1.TTHITCount & vbCrLf & "TT Size: " & Form1.TTSize
         Form1.Ai_information_label.Text = Label_text
 
     End Sub
@@ -917,124 +931,147 @@
         AddHandler tmr.Elapsed, AddressOf tmr_tick
         tmr.Interval = 100
         tmr.Enabled = True
-        'Dim counter As Integer = 0
-        'Dim All_Moves As New List(Of Form1.Efficient_moves)
-        'Dim ALPHA As Integer = -9999999
-        'Dim BETA As Integer = 9999999
-        'Dim IsMaximising As Boolean = True
-        'Dim CurrentScore As Integer = -999999
-        'Dim BestMoveScore As Integer = -9999999
-        'Dim BestMoveMOVE As Form1.Efficient_moves = Nothing
-        'Dim count As Integer = 0
-        'depth = 4
-        'Dim isokay As Boolean = False
-        'Dim IsBookMove = False
-        'All_Moves = Form1.calculate_all_moves(board, WhosTurn, All_Moves, False)
-        'All_Moves = Reorder_moves(All_Moves, board)
-        'If Form1.changboardcount > 0 Then
-
-
-        '    Form1.is_ai_calulating = True
-        '    Form1.board_info.castlingrights = ""
-        '    Form1.CastlePublicLetter = ""
-
-        '    Form1.BlackCountStart.Score = GetTeamValue(countpieces(board, 1))
-        '    Form1.WhiteCountStart.Score = GetTeamValue(countpieces(board, 0))
-
-
-        '    Form1.ogcastlingrights = Form1.board_info.castlingrights
-
-        '    For Each M In All_Moves
-        '        counter += 1
-        '        M.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
-
-        '        board = changeboard.efficient_change_board(board, M)
-        '        WhosTurn = Form1.switchgoes(WhosTurn)
-        '        CurrentScore = AlphaBetaMax(-99999999, 99999999, depth - 1, board, WhosTurn, count)
-        '        WhosTurn = Form1.switchgoes(WhosTurn)
-        '        board = changeboard.efficient_undo_board(board, M)
-        '        'If CurrentScore <> 0 Then
-        '        '    MsgBox(CurrentScore)
-        '        'End If
-        '        If CurrentScore >= BestMoveScore Then
-
-        '            BestMoveScore = CurrentScore
-        '            BestMoveMOVE = M
-        '            isokay = True
-        '        End If
-        '    Next
-
-
-        '    'clundy@lpsb.org.uk
-        '    If isokay = False Then
-        '        MsgBox("NO MOVE")
-        '    End If
-        '    All_Moves = Nothing
-        '    Form1.is_ai_calulating = False
-        '    'If IsNothing(BestMoveMOVE) Then
-        '    '    MsgBox("NO MOVE")
-        '    'End If
-        'Else
-
-        '    If Form1.rounds = 1 Then
-        '        Me.stringOfMovesToDo = ficsfileconverter.FindGameToCopy(Me.ListOfAllMasterGames)
-        '        MsgBox(Form1.PreviousMove.origin.x & "," & Form1.PreviousMove.origin.y & "     " & Form1.PreviousMove.target.x & " " & Form1.PreviousMove.target.y)
-        '        Me.ListofStarterMovesString = ficsfileconverter.ConvertFromStringToList(Me.stringOfMovesToDo, ListofStarterMovesString)
-        '    End If
-        '    IsBookMove = True
-        '    BestMoveMOVE = ficsfileconverter.ConvertStringToPos(Me.ListofStarterMovesString(1), Form1.whosgo, All_Moves, True)
-        '    BestMoveMOVE.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
-        '    If BestMoveMOVE.origin.sym = "x" Then
-        '        '------------------------------------------------------------------------------------------------------------------
-        '        BestMoveScore = -9999999
-        '        IsBookMove = False
-        '        depth = 3
-        '        Form1.is_ai_calulating = True
-        '        Form1.board_info.castlingrights = ""
-        '        Form1.CastlePublicLetter = ""
-        '        Form1.BlackCountStart.Score = GetTeamValue(countpieces(board, 1))
-        '        Form1.WhiteCountStart.Score = GetTeamValue(countpieces(board, 0))
-        '        Form1.ogcastlingrights = Form1.board_info.castlingrights
-        '        For Each M In All_Moves
-        '            M.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
-        '            counter += 1
-        '            board = changeboard.efficient_change_board(board, M)
-        '            WhosTurn = Form1.switchgoes(WhosTurn)
-        '            CurrentScore = AlphaBetaMax(-99999999, 99999999, depth - 1, board, WhosTurn, count)
-        '            WhosTurn = Form1.switchgoes(WhosTurn)
-        '            board = changeboard.efficient_undo_board(board, M)
-
-        '            If CurrentScore > BestMoveScore Then
-        '                BestMoveScore = CurrentScore
-        '                BestMoveMOVE = M
-        '                isokay = True
-        '            End If
-        '        Next
-        '        If isokay = False Then
-        '            MsgBox("NO MOVE")
-        '        End If
-        '        All_Moves = Nothing
-        '        Form1.is_ai_calulating = False
-        '        'If IsNothing(BestMoveMOVE) Then
-        '        '    MsgBox("NO MOVE")
-        '        'End If
-        '        '--------------------------------------------------------------------------------------------------------------
-        '    End If
-        '    Me.ListofStarterMovesString.RemoveAt(0)
-        '    Me.ListofStarterMovesString.RemoveAt(0)
-
-        'End If
-
+        
 
         Dim count As Integer
         Dim BestScore As Integer
         Dim bestMoveMOVE As Form1.Efficient_moves = MiniMaxModule.StartNegaMax(board, depth, Form1.whosgo, count, BestScore)
         tmr.Enabled = False
         Form1.is_ai_calulating = False
+
         Form1.board = changeboard.efficient_change_board(board, bestMoveMOVE)
+        Form1.TTSize = 0
+        For II = 0 To Form1.TranspoTable.Count - 1
+            If Form1.TranspoTable(II).Hash > 0 Then
+                Form1.TTSize += 1
+            End If
+        Next
         Write_AI_Info(bestMoveMOVE, count, BestScore, depth, False, MoveTimerCount)
+        Form1.TTHITCount = 0
+        Form1.TTSize = 0
         tmr = Nothing
     End Sub
+    'Dim counter As Integer = 0
+    'Dim All_Moves As New List(Of Form1.Efficient_moves)
+    'Dim ALPHA As Integer = -9999999
+    'Dim BETA As Integer = 9999999
+    'Dim IsMaximising As Boolean = True
+    'Dim CurrentScore As Integer = -999999
+    'Dim BestMoveScore As Integer = -9999999
+    'Dim BestMoveMOVE As Form1.Efficient_moves = Nothing
+    'Dim count As Integer = 0
+    'depth = 4
+    'Dim isokay As Boolean = False
+    'Dim IsBookMove = False
+    'All_Moves = Form1.calculate_all_moves(board, WhosTurn, All_Moves, False)
+    'All_Moves = Reorder_moves(All_Moves, board)
+    'If Form1.changboardcount > 0 Then
+
+
+    '    Form1.is_ai_calulating = True
+    '    Form1.board_info.castlingrights = ""
+    '    Form1.CastlePublicLetter = ""
+
+    '    Form1.BlackCountStart.Score = GetTeamValue(countpieces(board, 1))
+    '    Form1.WhiteCountStart.Score = GetTeamValue(countpieces(board, 0))
+
+
+    '    Form1.ogcastlingrights = Form1.board_info.castlingrights
+
+    '    For Each M In All_Moves
+    '        counter += 1
+    '        M.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
+
+    '        board = changeboard.efficient_change_board(board, M)
+    '        WhosTurn = Form1.switchgoes(WhosTurn)
+    '        CurrentScore = AlphaBetaMax(-99999999, 99999999, depth - 1, board, WhosTurn, count)
+    '        WhosTurn = Form1.switchgoes(WhosTurn)
+    '        board = changeboard.efficient_undo_board(board, M)
+    '        'If CurrentScore <> 0 Then
+    '        '    MsgBox(CurrentScore)
+    '        'End If
+    '        If CurrentScore >= BestMoveScore Then
+
+    '            BestMoveScore = CurrentScore
+    '            BestMoveMOVE = M
+    '            isokay = True
+    '        End If
+    '    Next
+
+
+    '    'clundy@lpsb.org.uk
+    '    If isokay = False Then
+    '        MsgBox("NO MOVE")
+    '    End If
+    '    All_Moves = Nothing
+    '    Form1.is_ai_calulating = False
+    '    'If IsNothing(BestMoveMOVE) Then
+    '    '    MsgBox("NO MOVE")
+    '    'End If
+    'Else
+
+    '    If Form1.rounds = 1 Then
+    '        Me.stringOfMovesToDo = ficsfileconverter.FindGameToCopy(Me.ListOfAllMasterGames)
+    '        MsgBox(Form1.PreviousMove.origin.x & "," & Form1.PreviousMove.origin.y & "     " & Form1.PreviousMove.target.x & " " & Form1.PreviousMove.target.y)
+    '        Me.ListofStarterMovesString = ficsfileconverter.ConvertFromStringToList(Me.stringOfMovesToDo, ListofStarterMovesString)
+    '    End If
+    '    IsBookMove = True
+    '    BestMoveMOVE = ficsfileconverter.ConvertStringToPos(Me.ListofStarterMovesString(1), Form1.whosgo, All_Moves, True)
+    '    BestMoveMOVE.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
+    '    If BestMoveMOVE.origin.sym = "x" Then
+    '        '------------------------------------------------------------------------------------------------------------------
+    '        BestMoveScore = -9999999
+    '        IsBookMove = False
+    '        depth = 3
+    '        Form1.is_ai_calulating = True
+    '        Form1.board_info.castlingrights = ""
+    '        Form1.CastlePublicLetter = ""
+    '        Form1.BlackCountStart.Score = GetTeamValue(countpieces(board, 1))
+    '        Form1.WhiteCountStart.Score = GetTeamValue(countpieces(board, 0))
+    '        Form1.ogcastlingrights = Form1.board_info.castlingrights
+    '        For Each M In All_Moves
+    '            M.OriginBoardInfo.castlingrights = Form1.ogcastlingrights
+    '            counter += 1
+    '            board = changeboard.efficient_change_board(board, M)
+    '            WhosTurn = Form1.switchgoes(WhosTurn)
+    '            CurrentScore = AlphaBetaMax(-99999999, 99999999, depth - 1, board, WhosTurn, count)
+    '            WhosTurn = Form1.switchgoes(WhosTurn)
+    '            board = changeboard.efficient_undo_board(board, M)
+
+    '            If CurrentScore > BestMoveScore Then
+    '                BestMoveScore = CurrentScore
+    '                BestMoveMOVE = M
+    '                isokay = True
+    '            End If
+    '        Next
+    '        If isokay = False Then
+    '            MsgBox("NO MOVE")
+    '        End If
+    '        All_Moves = Nothing
+    '        Form1.is_ai_calulating = False
+    '        'If IsNothing(BestMoveMOVE) Then
+    '        '    MsgBox("NO MOVE")
+    '        'End If
+    '        '--------------------------------------------------------------------------------------------------------------
+    '    End If
+    '    Me.ListofStarterMovesString.RemoveAt(0)
+    '    Me.ListofStarterMovesString.RemoveAt(0)
+
+    'End If
+    Public Sub SetStringOfOpening(ByVal StringList As String)
+        Me.stringOfMovesToDo = StringList
+    End Sub
+    Public Function GetStringOfOpening()
+        Return Me.stringOfMovesToDo
+    End Function
+
+    Public Sub SetListOfStringMoves(ByVal ListOfStrings As List(Of String))
+        Me.ListofStarterMovesString = ListOfStrings
+    End Sub
+    Public Function GetListOfOpeningsString()
+        Return Me.ListofStarterMovesString
+    End Function
+
     Private Function MiniMaxSmall(ByVal board(,) As theboardclass, ByVal ALPHA As Integer, ByVal BETA As Integer, ByVal depth As Integer, ByVal IsMaximising As Boolean, ByRef count As Integer, ByVal WhosTurn As Integer)
         If depth = 0 Then
 
@@ -1055,7 +1092,7 @@
         Form1.board_info.castlingrights = ""
         Form1.CastlePublicLetter = ""
         All_moves = Form1.calculate_all_moves(board, WhosTurn, All_moves, False)
-        
+
         All_moves = Reorder_moves(All_moves, board)
         If All_moves.Count = 0 Then
             Return 0
@@ -1259,7 +1296,7 @@
                         Case "p"
                             score += Form1.wPawnstructureScores(x, y)
                         Case "k"
-                            score += Form1.wKingStructureScores(x, y)
+                            'score += Form1.wKingStructureScores(x, y)
                         Case "b"
                             score += Form1.wBishopStructureScore(x, y)
                         Case "h"
@@ -1274,7 +1311,7 @@
                         Case "p"
                             score += Form1.bPawnstructureScores(x, y)
                         Case "k"
-                            score += Form1.bKingStructureScores(x, y)
+                            'score += Form1.bKingStructureScores(x, y)
                         Case "b"
                             score += Form1.bBishopStructureScore(x, y)
                         Case "h"
@@ -1295,7 +1332,7 @@
 
 
         score += Valuediff
-        
+
         Return score
     End Function
     Public Function countpieces(ByVal board(,) As theboardclass, ByVal team As Integer)

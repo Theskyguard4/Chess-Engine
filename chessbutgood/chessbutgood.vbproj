@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI.vb" />
+    <Compile Include="BookMovesPlayModule.vb" />
     <Compile Include="CalBoard.vb" />
     <Compile Include="changeboard.vb" />
     <Compile Include="Class1.vb" />
@@ -116,6 +117,7 @@
       <DependentUpon>Form1.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="game.vb" />
     <Compile Include="list_of_FENS.Designer.vb">
       <DependentUpon>list_of_FENS.vb</DependentUpon>
     </Compile>
@@ -123,6 +125,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="load_game.vb" />
+    <Compile Include="Login.Designer.vb">
+      <DependentUpon>Login.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Login.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MAIN_MENU.Designer.vb">
       <DependentUpon>MAIN_MENU.vb</DependentUpon>
     </Compile>
@@ -131,6 +139,7 @@
     </Compile>
     <Compile Include="MiniMaxModule.vb" />
     <Compile Include="Module1.vb" />
+    <Compile Include="Module2.vb" />
     <Compile Include="moves.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -148,6 +157,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="pieces.vb" />
+    <Compile Include="PlayerINFO.vb" />
     <Compile Include="Promotion.Designer.vb">
       <DependentUpon>Promotion.vb</DependentUpon>
     </Compile>
@@ -175,6 +185,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="list_of_FENS.resx">
       <DependentUpon>list_of_FENS.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MAIN_MENU.resx">
       <DependentUpon>MAIN_MENU.vb</DependentUpon>

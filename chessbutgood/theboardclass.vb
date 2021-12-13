@@ -6,8 +6,6 @@
     End Sub
     Public Sub set_hasmoved(ByVal bool As Boolean)
         Me.piece.has_moved(bool)
-
-
     End Sub
     Public Function get_checkmate_status()
         Return Is_checkmate
@@ -158,7 +156,7 @@
                 Form1.onelistofincheckplaces.Add(newpos)
 
             End If
-
+            Me.piece.addmoves(x, y, False, False)
 
         End If
 
@@ -296,36 +294,85 @@
 
                     End If
             End Select
-
-
-        End If
-
-
-        If Me.piece.getx - 1 >= 0 And Me.piece.gety - 1 >= 0 Then
-            If board(Me.piece.getx - 1, Me.piece.gety - 1).getteam <> Me.getteam Then
-                Me.kingmoves(Me.piece.getx - 1, Me.piece.gety - 1, False)
+            If Me.piece.getx - 1 >= 0 And Me.piece.gety - 1 >= 0 Then
+                If board(Me.piece.getx - 1, Me.piece.gety - 1).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx - 1, Me.piece.gety - 1, False)
+                End If
             End If
+
+
+            If Me.piece.getx + 1 <= 7 And Me.piece.gety - 1 >= 0 Then
+                If board(Me.piece.getx + 1, Me.piece.gety - 1).getteam <> Me.getteam Then
+
+                    Me.kingmoves(Me.piece.getx + 1, Me.piece.gety - 1, False)
+                End If
+            End If
+
+
+            If Me.piece.getx - 1 >= 0 And Me.piece.gety + 1 <= 7 Then
+                If board(Me.piece.getx - 1, Me.piece.gety + 1).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx - 1, Me.piece.gety + 1, False)
+                End If
+            End If
+
+            If Me.piece.getx + 1 <= 7 And Me.piece.gety + 1 <= 7 Then
+                If board(Me.piece.getx + 1, Me.piece.gety + 1).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx + 1, Me.piece.gety + 1, False)
+                End If
+            End If
+            '--------------------------------------------
+
+
+
+
+            If Me.piece.getx - 1 >= 0 Then
+                If board(Me.piece.getx - 1, Me.piece.gety).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx - 1, Me.piece.gety, False)
+                End If
+            End If
+
+            If Me.piece.gety - 1 >= 0 Then
+                If board(Me.piece.getx, Me.piece.gety - 1).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx, Me.piece.gety - 1, False)
+                End If
+            End If
+
+            If Me.piece.getx + 1 <= 7 Then
+                If board(Me.piece.getx + 1, Me.piece.gety).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx + 1, Me.piece.gety, False)
+                End If
+            End If
+            If Me.piece.gety + 1 <= 7 Then
+                If board(Me.piece.getx, Me.piece.gety + 1).getteam <> Me.getteam Then
+                    Me.kingmoves(Me.piece.getx, Me.piece.gety + 1, False)
+                End If
+            End If
+        Else
+            If Me.piece.getx - 1 >= 0 And Me.piece.gety - 1 >= 0 Then
+
+                Me.kingmoves(Me.piece.getx - 1, Me.piece.gety - 1, False)
+
         End If
 
 
         If Me.piece.getx + 1 <= 7 And Me.piece.gety - 1 >= 0 Then
-            If board(Me.piece.getx + 1, Me.piece.gety - 1).getteam <> Me.getteam Then
+
 
                 Me.kingmoves(Me.piece.getx + 1, Me.piece.gety - 1, False)
-            End If
+
         End If
 
 
         If Me.piece.getx - 1 >= 0 And Me.piece.gety + 1 <= 7 Then
-            If board(Me.piece.getx - 1, Me.piece.gety + 1).getteam <> Me.getteam Then
+
                 Me.kingmoves(Me.piece.getx - 1, Me.piece.gety + 1, False)
-            End If
+
         End If
 
         If Me.piece.getx + 1 <= 7 And Me.piece.gety + 1 <= 7 Then
-            If board(Me.piece.getx + 1, Me.piece.gety + 1).getteam <> Me.getteam Then
+
                 Me.kingmoves(Me.piece.getx + 1, Me.piece.gety + 1, False)
-            End If
+
         End If
         '--------------------------------------------
 
@@ -333,31 +380,37 @@
 
 
         If Me.piece.getx - 1 >= 0 Then
-            If board(Me.piece.getx - 1, Me.piece.gety).getteam <> Me.getteam Then
-                Me.kingmoves(Me.piece.getx - 1, Me.piece.gety, False)
-            End If
+
+            Me.kingmoves(Me.piece.getx - 1, Me.piece.gety, False)
+
         End If
 
         If Me.piece.gety - 1 >= 0 Then
-            If board(Me.piece.getx, Me.piece.gety - 1).getteam <> Me.getteam Then
-                Me.kingmoves(Me.piece.getx, Me.piece.gety - 1, False)
-            End If
+
+            Me.kingmoves(Me.piece.getx, Me.piece.gety - 1, False)
+
         End If
 
         If Me.piece.getx + 1 <= 7 Then
-            If board(Me.piece.getx + 1, Me.piece.gety).getteam <> Me.getteam Then
-                Me.kingmoves(Me.piece.getx + 1, Me.piece.gety, False)
-            End If
+
+            Me.kingmoves(Me.piece.getx + 1, Me.piece.gety, False)
+
         End If
         If Me.piece.gety + 1 <= 7 Then
-            If board(Me.piece.getx, Me.piece.gety + 1).getteam <> Me.getteam Then
-                Me.kingmoves(Me.piece.getx, Me.piece.gety + 1, False)
-            End If
+
+            Me.kingmoves(Me.piece.getx, Me.piece.gety + 1, False)
+
         End If
-
-
-
+        End If
         
+
+
+
+
+
+
+
+
 
     End Sub
 
@@ -375,23 +428,23 @@
         
         If Me.piece.getteam = 0 Then
             If Me.piece.gety = 7 Then
-                If Form1.is_ai_calulating = False Then
-                    If Me.getteam <> Form1.AIPLAYER.get_team Then
+                'If Form1.is_ai_calulating = False Then
+                '    'If Me.getteam <> Form1.AIPLAYER.get_team Then
 
-                        Promotion.team_of_proting_pawn = 1
-                        Promotion.promotion_place.x = Me.piece.getx
-                        Promotion.promotion_place.y = Me.piece.gety
-                        MsgBox(Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).getsym & " at x: " & Promotion.promotion_place.x & " and y: " & Promotion.promotion_place.y)
-                        Promotion.Show()
+                '    '    Promotion.team_of_proting_pawn = 1
+                '    '    Promotion.promotion_place.x = Me.piece.getx
+                '    '    Promotion.promotion_place.y = Me.piece.gety
+                '    '    MsgBox(Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).getsym & " at x: " & Promotion.promotion_place.x & " and y: " & Promotion.promotion_place.y)
+                '    '    Promotion.Show()
 
 
-                    Else
-                        Promotion.promotion_place.x = Me.piece.getx
-                        Promotion.promotion_place.y = Me.piece.gety
-                        Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).setpiece("q", Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).getteam)
+                '    'Else
+                '    '    Promotion.promotion_place.x = Me.piece.getx
+                '    '    Promotion.promotion_place.y = Me.piece.gety
+                '    '    Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).setpiece("q", Form1.board(Promotion.promotion_place.x, Promotion.promotion_place.y).getteam)
 
-                    End If
-                End If
+                '    'End If
+                'End If
             Else
                 If Me.piece.gety = 1 Then
                     If board(Me.piece.getx, Me.piece.gety + 1).getteam = 2 Then
@@ -438,6 +491,7 @@
 
         Else
             If Me.piece.gety = 0 Then
+
                 If Form1.is_ai_calulating = False Then
                     If Me.getteam <> Form1.AIPLAYER.get_team Then
 
@@ -475,7 +529,7 @@
                         Me.piece.addmoves(Me.piece.getx + 1, Me.piece.gety - 1, False, False)
                     ElseIf (board(Me.piece.getx + 1, Me.piece.gety).getteam = oppteam And board(Me.piece.getx + 1, Me.piece.gety).can_el_pasentfunc) Then
                         Me.piece.addmoves(Me.piece.getx + 1, Me.piece.gety - 1, False, True)
-                     
+
 
                     End If
                     pos.x = Me.piece.getx + 1
@@ -488,7 +542,7 @@
                         Me.piece.addmoves(Me.piece.getx - 1, Me.piece.gety - 1, False, False)
                     ElseIf (board(Me.piece.getx - 1, Me.piece.gety).getteam = oppteam And board(Me.piece.getx - 1, Me.piece.gety).can_el_pasentfunc) Then
                         Me.piece.addmoves(Me.piece.getx - 1, Me.piece.gety - 1, False, True)
-                     
+
 
                     End If
                     pos.x = Me.piece.getx - 1

@@ -1,4 +1,29 @@
 ﻿Module ZobristHashingModule
+    Public Function Get_Index(ByVal Hash As Long)
+        Dim index As Integer = Hash Mod Form1.TranspoTable.Count
+        If index < 0 Then
+            index *= -1
+        End If
+        Return index
+    End Function
+
+    Public Function CompareHashInTable(ByVal TT() As Form1.HashData, ByVal CHash As Long)
+        Try
+            If TT(Get_Index(CHash)).Hash = CHash Then
+                Return True
+            Else
+                Return False
+            End If
+        Catch ex As IndexOutOfRangeException
+            MsgBox("ERROR: " & Get_Index(CHash) & " Is Not In TT Array")
+        End Try
+        
+    End Function
+
+    Public Function GetHashEval(ByVal TT() As Form1.HashData, ByVal CHash As Long)
+        Return TT(Get_Index(CHash)).Eval
+    End Function
+
     Public Function InitZoHash(ByVal table(,) As String)
         Dim num As Integer
         Randomize()
@@ -17,7 +42,7 @@
         Dim h As Long
         Dim j As Integer
         Dim count As Integer = 0
-      
+
 
         For y = 0 To 7
             For x = 0 To 7
@@ -63,7 +88,7 @@
 
             Next
         Next
-        
+
         Return h
     End Function
     Public Function UpdateHash(ByVal board(,) As theboardclass, ByVal Move As Form1.Efficient_moves, ByVal Hash As Long)
@@ -97,12 +122,21 @@
                     y = Move.origin.y
             End Select
             For yy = 0 To y
-                For xx = 0 To x
-                    squareinhasharray += 1
+                If y = y Then
+                    For xx = 0 To x
+                        squareinhasharray += 1
 
-                Next
+                    Next
+                Else
+                    For xx = 0 To 7
+                        squareinhasharray += 1
+
+                    Next
+                End If
+                
             Next
-            squareinhasharray += 1
+            squareinhasharray -= 1
+
 
             If team = 0 Then
                 Select Case sym
@@ -135,14 +169,14 @@
                         j = 11
                 End Select
             End If
-            'Dim i As Long = Convert.ToInt64(Form1.HashTableRan(squareinhasharray, j), 2)
-            'Hash = Hash Xor i
+            Dim i As Long = Convert.ToInt64(Form1.HashTableRan(squareinhasharray, j), 2)
+            Hash = Hash Xor i
 
 
         Next
 
 
-        Return hash
+        Return Hash
 
     End Function
     Public Function Random_64bit_bin() As String

@@ -166,7 +166,9 @@
         Dim Move As Form1.Efficient_moves
         Dim isokay As Boolean = False
         Dim Has_set As Boolean = False
+        
         If usemovelist = True Then
+            
             Select Case StringMove.Length
                 Case 1
 
@@ -174,6 +176,7 @@
                     Move.origin.sym = "p"
                     Move.target.x = ConvertLetterPosToMyPos(StringMove(0))
                     Move.target.y = ConvertLetterPosToMyPos(StringMove(1))
+
                     If WhosTurn = 0 Then
                         For looper = Move.target.y - 1 To 0 Step -1
                             If Form1.board(Move.target.x, looper).getsym = "p" Then
@@ -193,7 +196,7 @@
                             End If
                         Next
                     End If
-                    
+
                     'Move = reverseMove(Move)
                     Move.target.sym = "_"
                     Move.SpecialMoveFlag = 0
@@ -218,10 +221,12 @@
                             End If
                         Next
                     Else
+
                         Move.origin.sym = convert(LCase(StringMove(0)))
                         Move.target.x = ConvertLetterPosToMyPos(StringMove(1))
                         Move.target.y = ConvertLetterPosToMyPos(StringMove(2))
                         For Each M In all_moves
+                            
                             If M.origin.sym = Move.origin.sym And M.target.x = Move.target.x And M.target.y = Move.target.y Then
                                 Move.origin.x = M.origin.x
                                 Move.origin.y = M.origin.y
@@ -233,7 +238,7 @@
                         Next
                     End If
 
-                    
+
 
                 Case 4
                     'if takingpiece
@@ -245,20 +250,25 @@
                         For Each M In all_moves
                             If M.target.x = Move.target.x And M.target.y = Move.target.y Then
                                 If M.origin.sym = "p" Then
-                                    Move.origin.x = M.origin.x
-                                    Move.origin.y = M.origin.y
-                                    Move.origin.sym = M.origin.sym
-                                    Move.SpecialMoveFlag = M.SpecialMoveFlag
-                                    Move.target.sym = M.target.sym
-                                    Move.origin.team = 0
-                                    Has_set = True
-                                    isokay = True
+                                    If M.target.sym <> "_" Then
+
+                                        Move.origin.x = M.origin.x
+                                        Move.origin.y = M.origin.y
+                                        Move.origin.sym = M.origin.sym
+                                        Move.SpecialMoveFlag = M.SpecialMoveFlag
+                                        Move.target.sym = M.target.sym
+                                        Move.origin.team = 0
+                                        Has_set = True
+                                        isokay = True
+
+                                    End If
+                                    
                                 End If
 
                             End If
                         Next
                         'if cannot take, ai decides move
-                      
+
                     Else
                         'not taking piece
                         Move.origin.sym = convert(StringMove(0))
@@ -280,7 +290,7 @@
 
                             End If
                         Next
-                       
+
                     End If
 
 
@@ -347,7 +357,7 @@
                     Move.origin.sym = "p"
                     Move.target.x = ConvertLetterPosToMyPos(StringMove(0))
                     Move.target.y = ConvertLetterPosToMyPos(StringMove(1))
-                    If WhosTurn = 0 Then
+                    If WhosTurn = 1 Then
                         For looper = Move.target.y - 1 To 0 Step -1
                             If Form1.board(Move.target.x, looper).getsym = "p" Then
                                 Move.origin.x = Move.target.x

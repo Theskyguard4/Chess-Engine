@@ -34,6 +34,7 @@ Partial Class Form1
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Ai_information_label = New System.Windows.Forms.Label()
         Me.ShowOpeningMovesButt = New System.Windows.Forms.Button()
+        Me.PieceInfo = New System.Windows.Forms.Label()
         Me.SuspendLayout()
         '
         'Save_Board_FEN
@@ -130,6 +131,15 @@ Partial Class Form1
         Me.ShowOpeningMovesButt.Text = "Show Opening Moves"
         Me.ShowOpeningMovesButt.UseVisualStyleBackColor = True
         '
+        'PieceInfo
+        '
+        Me.PieceInfo.AutoSize = True
+        Me.PieceInfo.Location = New System.Drawing.Point(1104, 395)
+        Me.PieceInfo.Name = "PieceInfo"
+        Me.PieceInfo.Size = New System.Drawing.Size(78, 17)
+        Me.PieceInfo.TabIndex = 11
+        Me.PieceInfo.Text = "Piece Info: "
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -138,6 +148,7 @@ Partial Class Form1
         Me.BackgroundImage = CType(resources.GetObject("$this.BackgroundImage"), System.Drawing.Image)
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
         Me.ClientSize = New System.Drawing.Size(1281, 892)
+        Me.Controls.Add(Me.PieceInfo)
         Me.Controls.Add(Me.ShowOpeningMovesButt)
         Me.Controls.Add(Me.Ai_information_label)
         Me.Controls.Add(Me.Label2)
@@ -171,5 +182,6 @@ Partial Class Form1
     Friend WithEvents Label2 As System.Windows.Forms.Label
     Friend WithEvents Ai_information_label As System.Windows.Forms.Label
     Friend WithEvents ShowOpeningMovesButt As System.Windows.Forms.Button
+    Friend WithEvents PieceInfo As System.Windows.Forms.Label
 
 End Class

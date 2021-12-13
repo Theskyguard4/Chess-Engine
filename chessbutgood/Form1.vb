@@ -2,8 +2,10 @@
     'if starts with efficient, means its remade to be quicker
   
     Structure HashData
+        Dim depth As Integer
         Dim Hash As Long
         Dim Eval As Integer
+        Dim entryflag As String
     End Structure
     Structure piececount
         Dim PawnCount As Integer
@@ -42,6 +44,7 @@
         Dim OriginBoardInfo As the_board_info
         Dim movescore As Integer
         Dim castleSym As Byte
+        Dim has_moved As Boolean
     End Structure
     Structure move_count
         Dim moves_count As Integer
@@ -83,12 +86,12 @@
         Dim DepthSearchTimeMax As Integer
     End Structure
     Public Structure BasicPosition
-        Dim X As Byte
-        Dim y As Byte
+        Dim X As Integer
+        Dim y As Integer
     End Structure
     Public Structure position
-        Dim x As Byte
-        Dim y As Byte
+        Dim x As Integer
+        Dim y As Integer
         Dim sym As Char
         Dim team As Byte
         Dim SpecialMove As Byte '1 = el pasent 2 = castling 3 = promotion
@@ -105,23 +108,29 @@
     Public Const castlevalue As Integer = 500
     Public Const horsevalue As Integer = 320
     Public Const bishopvalue As Integer = 330
-    Public Const queenvalue As Integer = 900
+    Public Const queenvalue As Integer = 1200
+    Public ListOfAllMasterGames As List(Of String)
+    Public BookMoveCount As Integer = 0
 
-    Public TranspoTable As New List(Of HashData)
+    Public TTHITCount As Integer = 0
+    Public TTSize As Integer = 0
+    Public TranspoTable(250000) As HashData
 
-
+    Public EndGameWieght As Integer = 0
     Public HashTableRan(63, 11) As String
     Public CurrentHash As Long
     Public wPawnstructureScores(7, 7) As Integer
     Public wKnightStructureScores(7, 7) As Integer
-    Public wKingStructureScores(7, 7) As Integer
+    Public wKingSTARTStructureScores(7, 7) As Integer
+    Public wKingENDStructureScores(7, 7) As Integer
     Public wBishopStructureScore(7, 7) As Integer
     Public wQueenStructureScores(7, 7) As Integer
     Public wRookStructureScores(7, 7) As Integer
-
+    Public GAMEPoint As String
     Public bPawnstructureScores(7, 7) As Integer
     Public bKnightStructureScores(7, 7) As Integer
-    Public bKingStructureScores(7, 7) As Integer
+    Public bKingSTARTStructureScores(7, 7) As Integer
+    Public bKingENDStructureScores(7, 7) As Integer
     Public bBishopStructureScore(7, 7) As Integer
     Public bQueenStructureScores(7, 7) As Integer
     Public bRookStructureScores(7, 7) As Integer
@@ -132,7 +141,7 @@
     Public Current_board_FEN As String 'the Full Fen string for saving a board holding all data, used mainly for recursion to undo the last board move
 
     'saved for whole game
-
+    Public BookMoveCounter As Integer
     Public CastlePublicLetter As String
     Public board_info As the_board_info
     Public wpawndiff As Integer
@@ -178,6 +187,7 @@
     Public bqueencount2 As Integer
     Public list_moves As New List(Of A_Move)
     Public usefulcounter As Integer = 0
+    Public LoggedIn As Boolean = False
     'piece moves
     Public WHITEPawnmoves As New List(Of position)
     'Public WHITEHorsemoves As List(Of position)
@@ -190,6 +200,8 @@
     'Public BLACKBishopmoves As List(Of position)
     'Public BLACKCastlemoves As List(Of position)
     'Public BLACKQueenmoves As List(Of position)
+    Public WhiteT As New PlayerINFO
+    Public blackT As New PlayerINFO
 
     'images locations
     Public whitepawnfile As String
@@ -214,7 +226,7 @@
 
     Public blankfile As String
 
-
+    Public CurrentGame As game
 
 
     Public depth_count(5) As Integer
@@ -238,7 +250,7 @@
     Public checked As Boolean = False
     Public checkmate As Boolean = False
     Public whosmated As Integer
-
+    Public ListOfCurrentGame As New List(Of game)
 
     Public ogcastlingrights As String
     Public opt As Integer
@@ -256,6 +268,7 @@
     Public first_time As Boolean
     Public FEN_STRING As String
     Public isok As Boolean
+    Public outofbook As Boolean = False
 
     Public Sub InitiatePieceStructures()
         Dim count As Integer
@@ -305,13 +318,24 @@
                         SplitLine = Split(line, ", ")
                         For x = 0 To 7
                             If SplitLine(x) <> "" Then
-                                wKingStructureScores(x, y) = SplitLine(x)
-                                bKingStructureScores(x, bcount) = SplitLine(x)
+                                wKingSTARTStructureScores(x, y) = SplitLine(x)
+                                bKingSTARTStructureScores(x, bcount) = SplitLine(x)
                             End If
                         Next
                         bcount -= 1
                     Next
-
+                Case "King End Structure"
+                    For y = 0 To 7
+                        line = LineInput(6)
+                        SplitLine = Split(line, ", ")
+                        For x = 0 To 7
+                            If SplitLine(x) <> "" Then
+                                wKingENDStructureScores(x, y) = SplitLine(x)
+                                bKingENDStructureScores(x, bcount) = SplitLine(x)
+                            End If
+                        Next
+                        bcount -= 1
+                    Next
                 Case "Bishop Structure "
                     For y = 0 To 7
                         line = LineInput(6)
@@ -405,7 +429,7 @@
         checked = False
 
         incheckpiece.moves.Clear()
-        all_moves.Clear()
+
     End Sub
     Public Function switchgoes(ByVal whosgo_ As Integer)
         If whosgo_ = 1 Then
@@ -423,7 +447,6 @@
 
         If rounds <> 0 Then
             whosgo = switchgoes(whosgo)
-            CurrentHash = ZobristHashingModule.UpdateHash(board, PreviousMove, CurrentHash)
 
             Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
 
@@ -433,21 +456,17 @@
             Do Until whosgo <> AIPLAYER.get_team
 
 
-
-                board = AIPLAYER.get_AImove(Me.board)
+                all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
+                board = BookMovesPlayModule.PlayBookMoveYorN(rounds, board, outofbook, AIPLAYER, BookMoveCount, whosgo)
                 whosgo = switchgoes(whosgo)
                 rounds += 1
                 reset()
-                Me.Text = "Board hash: " & Convert.ToString(ZobristHashingModule.UpdateHash(board, PreviousMove, CurrentHash), 2).PadLeft(64, "0")
+                Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
             Loop
         End If
 
-
-        If rounds <> 0 Then
-            CurrentHash = ZobristHashingModule.UpdateHash(board, PreviousMove, CurrentHash)
-
-            Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
-        End If
+        reset()
+        Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
         all_move_LIST.Clear()
         all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
         ogcastlingrights = board_info.castlingrights
@@ -1305,7 +1324,9 @@
 
                 Next
             Next
-
+            If board(incheckpiece.kingmove.x, incheckpiece.kingmove.y).getmoves.Count > 0 Then
+                checkmate = False
+            End If
 
             newlist = Nothing
         End If
@@ -1331,7 +1352,11 @@
                                     If M.SpecialMove = 2 Then
                                         board_info.castlingrights = Me.CastlePublicLetter
                                     End If
-
+                                    If board(xx, yy).Get_hasmoved = True Then
+                                        Move.has_moved = True
+                                    Else
+                                        Move.has_moved = False
+                                    End If
                                     Move.OriginBoardInfo.castlingrights = Me.CastlePublicLetter
                                     Move.SpecialMoveFlag = M.SpecialMove
                                     Move.origin.x = xx
@@ -1354,6 +1379,11 @@
                             If board(xx, yy).getteam = whosgo__ Then
                                 If M.SpecialMove = 2 Then
                                     board_info.castlingrights = Me.CastlePublicLetter
+                                End If
+                                If board(xx, yy).Get_hasmoved = True Then
+                                    Move.has_moved = True
+                                Else
+                                    Move.has_moved = False
                                 End If
                                 Move.OriginBoardInfo.castlingrights = Me.CastlePublicLetter
                                 Move.SpecialMoveFlag = M.SpecialMove
@@ -1378,13 +1408,41 @@
 
         Return list
     End Function
+    Public Function GetPieceValue(ByVal sym As String)
+        Select Case sym
+            Case "_"
+                Return 0
+            Case "p"
+                Return pawnvalue
+            Case "q"
+                Return queenvalue
+            Case "k"
+                Return 99999
+            Case "b"
+                Return bishopvalue
+            Case "h"
+                Return horsevalue
+            Case "c"
+                Return castlevalue
+
+        End Select
+    End Function
+    Sub SetUpTeams()
+
+    End Sub
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.AssetFolderPath = load_game.get_asset_folder_name
         load_game.load_settings_from_file()
         all_moves = New List(Of AI.Moves)
         whosgo = 1
-        If Me.settings.Playing_Agaisnt_AI = True Then
 
+        'Me.CurrentGame = New game()
+
+
+
+        If Me.settings.Playing_Agaisnt_AI = True Then
+            ListOfAllMasterGames = New List(Of String)
+            ListOfAllMasterGames = ficsfileconverter.ConvertFileFromFicsRAWToEachLine(AssetFolderPath & "grandmastergames.PGN", Me.ListOfAllMasterGames)
             AIPLAYER = New AI(1)
             AIPLAYER.set_team(0)
             Me.InitiatePieceStructures()
@@ -1396,6 +1454,7 @@
         End If
         If Me.settings.using_FEN = True Then
             board = FEN_STRING_USE.Setboard(board)
+            Me.outofbook = True
         Else
             board = makeboard(board)
         End If
@@ -1410,7 +1469,7 @@
             HashTableRan = ZobristHashingModule.InitZoHash(HashTableRan)
 
             CurrentHash = ZobristHashingModule.HashBoard(board)
-            
+
 
             'createboard2()
             Game()
@@ -1502,6 +1561,6 @@
     End Sub
 
     Private Sub ShowOpeningMovesButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ShowOpeningMovesButt.Click
-        MsgBox(AIPLAYER.get_Opening_moves_string)
+        MsgBox(AIPLAYER.GetOpeningMovelist)
     End Sub
 End Class

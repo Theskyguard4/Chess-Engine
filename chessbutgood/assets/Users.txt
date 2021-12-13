@@ -1,0 +1,4 @@
+Username:lewispeckk
+Password:welcome123
+elo:2000
+image;D:\documents\Visual Studio 2010\Projects\chessbutgood\chessbutgood\assets\DefaultPP.png

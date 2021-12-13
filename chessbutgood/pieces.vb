@@ -194,7 +194,7 @@
         Return False
     End Function
     Private Sub PictureBox1_Click(ByVal sender As Object, ByVal e As EventArgs)
-
+        Form1.PieceInfo.Text = "Piece Info: " & Me.symbal & vbCrLf & "Has Moved: " & Me.hasmoved & vbCrLf & "Is Pinned: " & Me.ispinned
 
         If Form1.isselectedownalready = False Then
             'MsgBox(Me.getsym) 'when u click on a piece displays the sym
@@ -516,8 +516,8 @@
                 'up
                 For xx = Me.gety - 1 To Form1.incheckpiece.kingmove.y + 1 Step -1
                     If Form1.board(xx, yy).getsym = "_" Then
-                        new_pos.x = xx
-                        new_pos.y = yy
+                        new_pos.x = Form1.incheckpiece.x
+                        new_pos.y = xx
                         Form1.incheckpiece.blockablepositions.Add(new_pos)
                         Form1.incheckpiece.direction = "up"
 
@@ -530,8 +530,8 @@
                 'MsgBox("x: " & xxx - 1 & " to " & Form1.incheckpiece.kingmove.y + 1)
                 For xx = xxx + 1 To Form1.incheckpiece.kingmove.y - 1 Step 1
                     If Form1.board(xx, yy).getsym = "_" Then
-                        new_pos.x = xx
-                        new_pos.y = yy
+                        new_pos.x = Form1.incheckpiece.x
+                        new_pos.y = xx
                         Form1.incheckpiece.blockablepositions.Add(new_pos)
                         Form1.incheckpiece.direction = "down"
 
@@ -584,14 +584,18 @@
             If isAlPasent = True Then
                 Me.movesave.SpecialMove = 1
             End If
-
+            If Me.symbal = "p" Then
+                If Me.movesave.y = 0 Or Me.movesave.y = 7 Then
+                    Me.movesave.SpecialMove = 3
+                End If
+            End If
 
             Me.move.Add(Me.movesave)
         End If
 
 
 
-        
+
 
 
 

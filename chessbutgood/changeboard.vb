@@ -145,8 +145,10 @@
     Public Function efficient_undo_board(ByVal the_board(,) As theboardclass, ByVal the_move As Form1.Efficient_moves)
         Form1.rounds -= 1
         Form1.changboardcount -= 1
+        
+        the_board(the_move.origin.x, the_move.origin.y).set_hasmoved(the_move.has_moved)
         Select Case the_move.SpecialMoveFlag
-            Case 0 'no special move
+            Case 0, 3 'no special move
                 If the_move.origin.sym = "p" Then
                     If the_move.origin.y + 2 = the_move.target.y Or the_move.origin.y - 2 = the_move.target.y Then
                         the_board(the_move.target.x, the_move.target.y).set_has_moved_2(False)
@@ -155,6 +157,7 @@
                 End If
                 the_board(the_move.origin.x, the_move.origin.y).setpiece(the_move.origin.sym, the_move.origin.team)
                 the_board(the_move.target.x, the_move.target.y).setpiece(the_move.target.sym, the_move.target.team)
+
                 For Each letter In the_move.OriginBoardInfo.castlingrights
                     Select Case letter
                         Case "K"
@@ -227,18 +230,20 @@
                 the_board(the_move.origin.x, the_move.origin.y).setpiece("k", the_move.origin.team)
                 the_board(the_move.target.x, the_move.target.y).setpiece("_", 2)
                 the_board(the_move.origin.x, the_move.origin.y).set_hasmoved(False)
-            Case 3 'promotion
+                'promotion
             Case Else
                 MsgBox("")
         End Select
         Form1.board_info.castlingrights = the_move.OriginBoardInfo.castlingrights
-
+        Form1.CurrentHash = ZobristHashingModule.UpdateHash(the_board, the_move, Form1.CurrentHash)
         Return the_board
     End Function
     Public Function efficient_change_board(ByVal the_board(,) As theboardclass, ByRef Move As Form1.Efficient_moves)
         Form1.rounds += 1
         Form1.changboardcount += 1
         Form1.PreviousMove = Move
+      
+
         Select Case Move.SpecialMoveFlag
             Case 0
                 If Move.origin.sym = "p" Then
@@ -286,7 +291,29 @@
 
             Case 3 ' promotion
 
+                the_board(Move.origin.x, Move.origin.y).setpiece("_", 2)
+
+                'hasmoved
+                the_board(Move.target.x, Move.target.y).set_hasmoved(True)
+                the_board(Move.origin.x, Move.origin.y).set_hasmoved(True)
+                If Form1.is_ai_calulating = False Then
+                    If Move.origin.team = Form1.AIPLAYER.get_team Then
+                        Form1.board(Move.target.x, Move.target.y).setpiece("q", Move.origin.team)
+                    Else
+                        Promotion.team_of_proting_pawn = Move.origin.team
+                        Promotion.promotion_place.x = Move.target.x
+                        Promotion.promotion_place.y = Move.target.y
+
+                        Promotion.Show()
+                    End If
+                    
+
+                Else
+
+                    Form1.board(Move.target.x, Move.target.y).setpiece("q", Move.origin.team)
+                End If
         End Select
+        Form1.CurrentHash = ZobristHashingModule.UpdateHash(the_board, Move, Form1.CurrentHash)
         Return the_board
     End Function
 End Module
