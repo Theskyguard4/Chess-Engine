@@ -1,5 +1,9 @@
 ﻿Public Class Form1
     'if starts with efficient, means its remade to be quicker
+    Structure RedoUndoMoveData
+        Dim move As Efficient_moves
+        Dim MoveNotation As String
+    End Structure
   
     Structure HashData
         Dim depth As Integer
@@ -189,6 +193,8 @@
     Public usefulcounter As Integer = 0
     Public LoggedIn As Boolean = False
     'piece moves
+
+    Public loggedInUser As New PlayerINFO
     Public WHITEPawnmoves As New List(Of position)
     'Public WHITEHorsemoves As List(Of position)
     'Public WHITEBishopmoves As List(Of position)
@@ -1427,16 +1433,17 @@
 
         End Select
     End Function
+    
     Sub SetUpTeams()
 
     End Sub
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Me.AssetFolderPath = load_game.get_asset_folder_name
         load_game.load_settings_from_file()
-        all_moves = New List(Of AI.Moves)
+
         whosgo = 1
 
-        'Me.CurrentGame = New game()
+
 
 
 
@@ -1445,6 +1452,17 @@
             ListOfAllMasterGames = ficsfileconverter.ConvertFileFromFicsRAWToEachLine(AssetFolderPath & "grandmastergames.PGN", Me.ListOfAllMasterGames)
             AIPLAYER = New AI(1)
             AIPLAYER.set_team(0)
+            Select Case AIPLAYER.get_team
+                Case 0
+                    WhiteT.GameAliasC("CPU")
+                    WhiteT.EloC(1500)
+                    WhiteT.ProfilePicPATH(AssetFolderPath & "logo.png")
+                Case 1
+                    blackT.GameAliasC("CPU")
+                    blackT.EloC(1500)
+                    blackT.ProfilePicPATH(AssetFolderPath & "logo.png")
+            End Select
+
             Me.InitiatePieceStructures()
         ElseIf Me.settings.AI_vs_AI = True Then
             AIPLAYER = New AI(1)
@@ -1458,7 +1476,7 @@
         Else
             board = makeboard(board)
         End If
-
+        Me.CurrentGame = New game(1, "", blackT, WhiteT)
 
         If settings.calculating_all_moves_for_test = True Then
             drawboard(board)

@@ -22,6 +22,7 @@ Partial Class MAIN_MENU
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MAIN_MENU))
         Me.Pvpbutton = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.PVAIbutton = New System.Windows.Forms.Button()
@@ -29,6 +30,11 @@ Partial Class MAIN_MENU
         Me.FEN_CODE_BUTTON = New System.Windows.Forms.Button()
         Me.ExitBUTT = New System.Windows.Forms.Button()
         Me.SignInMainMenuBUTT = New System.Windows.Forms.Button()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
+        Me.LogoutBUTT = New System.Windows.Forms.Button()
+        Me.ProfilePictureBox = New System.Windows.Forms.PictureBox()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.ProfilePictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'Pvpbutton
@@ -44,7 +50,7 @@ Partial Class MAIN_MENU
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 22.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(647, 9)
+        Me.Label1.Location = New System.Drawing.Point(644, 108)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(119, 44)
         Me.Label1.TabIndex = 1
@@ -96,11 +102,46 @@ Partial Class MAIN_MENU
         Me.SignInMainMenuBUTT.Text = "Sign In"
         Me.SignInMainMenuBUTT.UseVisualStyleBackColor = True
         '
+        'PictureBox1
+        '
+        Me.PictureBox1.BackgroundImage = CType(resources.GetObject("PictureBox1.BackgroundImage"), System.Drawing.Image)
+        Me.PictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+        Me.PictureBox1.Location = New System.Drawing.Point(318, 9)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(811, 140)
+        Me.PictureBox1.TabIndex = 8
+        Me.PictureBox1.TabStop = False
+        '
+        'LogoutBUTT
+        '
+        Me.LogoutBUTT.Location = New System.Drawing.Point(1200, 115)
+        Me.LogoutBUTT.Name = "LogoutBUTT"
+        Me.LogoutBUTT.Size = New System.Drawing.Size(125, 28)
+        Me.LogoutBUTT.TabIndex = 9
+        Me.LogoutBUTT.Text = "Log Out"
+        Me.LogoutBUTT.UseVisualStyleBackColor = True
+        Me.LogoutBUTT.Visible = False
+        '
+        'ProfilePictureBox
+        '
+        Me.ProfilePictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.ProfilePictureBox.Location = New System.Drawing.Point(1215, 9)
+        Me.ProfilePictureBox.Name = "ProfilePictureBox"
+        Me.ProfilePictureBox.Size = New System.Drawing.Size(100, 100)
+        Me.ProfilePictureBox.TabIndex = 10
+        Me.ProfilePictureBox.TabStop = False
+        Me.ProfilePictureBox.Visible = False
+        '
         'MAIN_MENU
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.SystemColors.ActiveCaption
+        Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.ClientSize = New System.Drawing.Size(1337, 601)
+        Me.Controls.Add(Me.ProfilePictureBox)
+        Me.Controls.Add(Me.LogoutBUTT)
+        Me.Controls.Add(Me.PictureBox1)
         Me.Controls.Add(Me.SignInMainMenuBUTT)
         Me.Controls.Add(Me.ExitBUTT)
         Me.Controls.Add(Me.FEN_CODE_BUTTON)
@@ -108,8 +149,14 @@ Partial Class MAIN_MENU
         Me.Controls.Add(Me.PVAIbutton)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Pvpbutton)
+        Me.Cursor = System.Windows.Forms.Cursors.Hand
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "MAIN_MENU"
-        Me.Text = "MAIN_MENU"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
+        Me.Text = "Chess Arrow"
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.ProfilePictureBox, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -121,4 +168,7 @@ Partial Class MAIN_MENU
     Friend WithEvents FEN_CODE_BUTTON As System.Windows.Forms.Button
     Friend WithEvents ExitBUTT As System.Windows.Forms.Button
     Friend WithEvents SignInMainMenuBUTT As System.Windows.Forms.Button
+    Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
+    Friend WithEvents LogoutBUTT As System.Windows.Forms.Button
+    Friend WithEvents ProfilePictureBox As System.Windows.Forms.PictureBox
 End Class

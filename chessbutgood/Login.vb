@@ -22,6 +22,7 @@
                 splitline = LineInput(1).Split(";")
                 PP = Image.FromFile((splitline(1)))
                 All_Users(usercount).ProfilePictureC(PP)
+                All_Users(usercount).ProfilePicPATH(splitline(1))
                 ReDim Preserve All_Users(All_Users.Length)
                 usercount += 1
             End If
@@ -50,6 +51,10 @@
             Me.LoginERRORLabel.ForeColor = Color.LightGreen
             Me.LoginERRORLabel.Text = "Login Successfull!"
             MsgBox("Loggin Succesfull" & vbCrLf & "User: " & All_Users(IndexOfUser).GameAliasC)
+            Form1.LoggedIn = True
+            Form1.loggedInUser = All_Users(IndexOfUser)
+            MAIN_MENU.DisplayAsLoggedIn(Form1.loggedInUser)
+
             Me.Close()
         Else
             Me.LoginERRORLabel.ForeColor = Color.MediumVioletRed
@@ -59,5 +64,6 @@
 
     Private Sub Login_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Load_All_users()
+        PasswordTB.PasswordChar = "*"
     End Sub
 End Class

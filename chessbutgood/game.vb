@@ -1,5 +1,5 @@
 ﻿Public Class game
-    Protected GameMovesString As List(Of String)
+    Protected GameMovesString As List(Of Form1.RedoUndoMoveData)
     Protected StartingTeam As Integer
     Protected BlackTeam As PlayerINFO
     Protected WhiteTeam As PlayerINFO
@@ -8,13 +8,22 @@
     Protected EndFEN As String
 
     Public Sub New(ByVal StartTeam As Integer, ByVal SFEN As String, ByVal BlackT As PlayerINFO, ByVal WhiteT As PlayerINFO)
+        Me.GameMovesString = New List(Of Form1.RedoUndoMoveData)
         Me.StartingTeam = StartTeam
         Me.StartFEN = SFEN
-        Me.BlackTeam = New PlayerINFO(BlackT.GameAliasC, BlackTeam.EloC, BlackT.ProfilePictureC)
-        Me.WhiteTeam = New PlayerINFO(WhiteT.GameAliasC, WhiteT.EloC, WhiteT.ProfilePictureC)
+        Me.BlackTeam = New PlayerINFO(BlackT.GameAliasC, BlackT.EloC, BlackT.ProfilePicPATH)
+        Me.WhiteTeam = New PlayerINFO(WhiteT.GameAliasC, WhiteT.EloC, WhiteT.ProfilePicPATH)
     End Sub
 
-    Public Sub GameMoveStringC(ByVal GMS As List(Of String))
+    Public Sub AddMoveToGame(ByVal move As Form1.Efficient_moves, ByVal All_Moves As List(Of Form1.Efficient_moves))
+        Dim TempMove As Form1.RedoUndoMoveData
+
+        TempMove.move = move
+        TempMove.MoveNotation = ficsfileconverter.ConvertMyMoveToNotation(move, All_Moves)
+        Me.GameMovesString.Add(TempMove)
+    End Sub
+
+    Public Sub GameMoveStringC(ByVal GMS As List(Of Form1.RedoUndoMoveData))
         Me.GameMovesString = GMS
     End Sub
     Public Function GameMoveStringC()

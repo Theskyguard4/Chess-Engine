@@ -242,6 +242,9 @@
         Form1.rounds += 1
         Form1.changboardcount += 1
         Form1.PreviousMove = Move
+        If Form1.is_ai_calulating = False Then
+            Form1.CurrentGame.AddMoveToGame(Move, Form1.all_move_LIST)
+        End If
       
 
         Select Case Move.SpecialMoveFlag

@@ -11,6 +11,10 @@
         Loop
         FileClose(1)
 
+        FileOpen(2, filename, OpenMode.Output)
+        For Each line In ListOfOpenings
+            PrintLine(2, line)
+        Next
 
 
         Return ListOfOpenings
@@ -162,13 +166,109 @@
         End Select
         Return Number
     End Function
+    Public Function ConvertMyMoveToNotation(ByVal move As Form1.Efficient_moves, ByVal all_moves As List(Of Form1.Efficient_moves))
+        Dim NewString As String = ""
+        Dim x As String
+        Dim y As String
+        Dim sym As String
+        x = GetNotationFromMyPos(move.target.x, "x")
+        y = GetNotationFromMyPos(move.target.y, "y")
+        sym = convertSym(move.origin.sym)
+
+        NewString = x & y
+
+
+        Dim isokay As Boolean = True
+        Dim FileRankExtra As String
+        For Each M In all_moves
+            If M.origin.x <> move.origin.x And M.origin.y <> move.origin.y Then
+                If M.origin.sym = move.origin.sym And M.origin.team = move.origin.team Then
+                    If M.target.x = move.target.x And M.target.y = move.target.y Then
+                        isokay = False
+
+                    End If
+                End If
+            End If
+        Next
+
+        If isokay = False Then
+            FileRankExtra = x
+            If move.origin.sym <> "p" Then
+                sym = sym & FileRankExtra
+            Else
+                sym = FileRankExtra
+            End If
+        End If
+
+        If sym = "P" Then
+            sym = ""
+        End If
+
+        Return (sym & NewString)
+    End Function
+    Private Function convertSym(ByVal sym As String)
+        Select Case sym
+            Case "h"
+                Return "N"
+            Case "c"
+                Return "R"
+            Case Else
+                Return UCase(sym)
+        End Select
+    End Function
+    Private Function GetNotationFromMyPos(ByVal num As Integer, ByVal xORy As String)
+
+        If xORy = "x" Then
+            Select Case num
+                Case 0
+                    Return "a"
+                Case 1
+                    Return "b"
+                Case 2
+                    Return "c"
+                Case 3
+                    Return "d"
+                Case 4
+                    Return "e"
+                Case 5
+                    Return "f"
+                Case 6
+                    Return "g"
+                Case 7
+                    Return "h"
+            End Select
+
+        Else
+            Select Case num
+                Case 0
+                    Return "8"
+                Case 1
+                    Return "7"
+                Case 2
+                    Return "6"
+                Case 3
+                    Return "5"
+                Case 4
+                    Return "4"
+                Case 5
+                    Return "3"
+                Case 6
+                    Return "2"
+                Case 7
+                    Return "1"
+            End Select
+        End If
+       
+    End Function
+
+
     Public Function ConvertStringToPos(ByVal StringMove As String, ByVal WhosTurn As Integer, ByVal all_moves As List(Of Form1.Efficient_moves), ByVal usemovelist As Boolean) As Form1.Efficient_moves
         Dim Move As Form1.Efficient_moves
         Dim isokay As Boolean = False
         Dim Has_set As Boolean = False
-        
+
         If usemovelist = True Then
-            
+
             Select Case StringMove.Length
                 Case 1
 
@@ -226,7 +326,7 @@
                         Move.target.x = ConvertLetterPosToMyPos(StringMove(1))
                         Move.target.y = ConvertLetterPosToMyPos(StringMove(2))
                         For Each M In all_moves
-                            
+
                             If M.origin.sym = Move.origin.sym And M.target.x = Move.target.x And M.target.y = Move.target.y Then
                                 Move.origin.x = M.origin.x
                                 Move.origin.y = M.origin.y
@@ -262,7 +362,7 @@
                                         isokay = True
 
                                     End If
-                                    
+
                                 End If
 
                             End If
@@ -401,7 +501,7 @@
 
             End Select
         End If
-        
+
 
 
 

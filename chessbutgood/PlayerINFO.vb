@@ -3,13 +3,23 @@
     Protected PassWord As String
     Protected Elo As Integer
     Protected ProfilePicture As Image
+    Protected ProfilePicturePATH As String
 
-    Public Sub New(ByVal Name As String, ByVal EloNew As Integer, ByVal PP As Image)
+
+
+    Public Sub New(ByVal Name As String, ByVal EloNew As Integer, ByVal PP As String)
         Me.GameAlias = Name
         Me.Elo = EloNew
-        Me.ProfilePicture = PP
+        Me.ProfilePicturePATH = PP
     End Sub
     Public Sub New()
+    End Sub
+
+    Public Function ProfilePicPATH()
+        Return Me.ProfilePicturePATH
+    End Function
+    Public Sub ProfilePicPATH(ByVal st As String)
+        Me.ProfilePicturePATH = st
     End Sub
 
     Public Function PasswordC()

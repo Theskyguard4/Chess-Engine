@@ -20,7 +20,19 @@
         FEN_LIST.Show()
 
     End Sub
+    Public Sub DisplayAsLoggedIn(ByVal User As PlayerINFO)
+        If Form1.LoggedIn = True Then
+            Me.ProfilePictureBox.Image = Form1.loggedInUser.ProfilePictureC
+            Me.SignInMainMenuBUTT.Visible() = False
+            Me.ProfilePictureBox.Visible = True
+            Me.LogoutBUTT.Visible = True
 
+        Else
+            Me.SignInMainMenuBUTT.Visible() = True
+            Me.ProfilePictureBox.Visible = False
+            Me.LogoutBUTT.Visible = False
+        End If
+    End Sub
     Private Sub MAIN_MENU_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Form1.settings.using_FEN = False
         Form1.AssetFolderPath = load_game.get_asset_folder_name
@@ -52,5 +64,17 @@
 
     Private Sub SignInMainMenuBUTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SignInMainMenuBUTT.Click
         Login.Show()
+    End Sub
+
+    Private Sub LogoutBUTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles LogoutBUTT.Click
+        Form1.loggedInUser = Nothing
+        Form1.LoggedIn = False
+        Me.ProfilePictureBox.Visible = False
+        Me.LogoutBUTT.Visible = False
+        Me.SignInMainMenuBUTT.Visible = True
+    End Sub
+
+    Private Sub ExitBUTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitBUTT.Click
+        Me.Close()
     End Sub
 End Class
