@@ -6,6 +6,7 @@
     End Structure
   
     Structure HashData
+        Dim Team As Integer
         Dim depth As Integer
         Dim Hash As Long
         Dim Eval As Integer
@@ -77,18 +78,7 @@
         Dim Move_Score_guess As Integer
         Dim ischecking As Boolean
     End Structure
-    Public Structure options
-        Dim Playing_Agaisnt_AI As Boolean
-        Dim AI_vs_AI As Boolean
-        Dim Player_vs_player As Boolean
-        Dim using_FEN As Boolean
-        Dim calculating_all_moves_for_test As Boolean
-        Dim DisplayDefaultdata As Boolean
-        Dim DisplayAdvancedData As Boolean
-        Dim UseSetDepth As Boolean
-        Dim DepthSearchIntegerMax As Integer
-        Dim DepthSearchTimeMax As Integer
-    End Structure
+   
     Public Structure BasicPosition
         Dim X As Integer
         Dim y As Integer
@@ -108,6 +98,10 @@
         Dim piecepinningblack As List(Of position)
         Dim diffofpin As List(Of position)
     End Structure
+    Public CurrentArrowPointer As Integer = 0
+    Public ArrowEndOrStart As Boolean = False ' false = start, true = end
+    Public DrawableArrows(20) As Arrow
+
     Public Const pawnvalue As Integer = 100
     Public Const castlevalue As Integer = 500
     Public Const horsevalue As Integer = 320
@@ -115,6 +109,9 @@
     Public Const queenvalue As Integer = 1200
     Public ListOfAllMasterGames As List(Of String)
     Public BookMoveCount As Integer = 0
+
+    Public ViewGame As Boolean
+    Public CloseGame As Boolean
 
     Public TTHITCount As Integer = 0
     Public TTSize As Integer = 0
@@ -129,6 +126,7 @@
     Public wKingENDStructureScores(7, 7) As Integer
     Public wBishopStructureScore(7, 7) As Integer
     Public wQueenStructureScores(7, 7) As Integer
+    Public wQueenStartStructureScores(7, 7) As Integer
     Public wRookStructureScores(7, 7) As Integer
     Public GAMEPoint As String
     Public bPawnstructureScores(7, 7) As Integer
@@ -137,6 +135,7 @@
     Public bKingENDStructureScores(7, 7) As Integer
     Public bBishopStructureScore(7, 7) As Integer
     Public bQueenStructureScores(7, 7) As Integer
+    Public bQueenStartStructureScores(7, 7) As Integer
     Public bRookStructureScores(7, 7) As Integer
 
     Public WhiteCountStart As piececount
@@ -153,7 +152,7 @@
     Public wbishopsdiff As Integer
     Public whorsediff As Integer
     Public wqueendiff As Integer
-    Public AssetFolderPath As String ' just add file name
+
     Public LastRoundInCheck As Boolean
     Public bpawndiff As Integer
     Public bcastlediff As Integer
@@ -191,10 +190,9 @@
     Public bqueencount2 As Integer
     Public list_moves As New List(Of A_Move)
     Public usefulcounter As Integer = 0
-    Public LoggedIn As Boolean = False
     'piece moves
 
-    Public loggedInUser As New PlayerINFO
+
     Public WHITEPawnmoves As New List(Of position)
     'Public WHITEHorsemoves As List(Of position)
     'Public WHITEBishopmoves As List(Of position)
@@ -212,7 +210,8 @@
     'images locations
     Public whitepawnfile As String
     Public blackpawnfile As String
-
+    Public UndoCount As Integer = 0
+    Public undoRestart As Boolean = False
     Public whitekingfile As String
     Public blackkingfile As String
 
@@ -241,7 +240,7 @@
     Public AI_Move As New position
     Public incheckpiece As New checkpiece
     Public timercount As Integer
-    Public settings As options
+
     Public canbeblocked As Boolean = False
     Public timer_count As Integer
     Public board(7, 7) As theboardclass
@@ -278,7 +277,7 @@
 
     Public Sub InitiatePieceStructures()
         Dim count As Integer
-        FileOpen(6, Me.AssetFolderPath & "PieceStructure.txt", OpenMode.Input)
+        FileOpen(6, MAIN_MENU.settings.AssetPATH & "PieceStructure.txt", OpenMode.Input)
         Dim line As String
         Dim SplitLine() As String
         Dim bcount As Integer = 7
@@ -342,6 +341,8 @@
                         Next
                         bcount -= 1
                     Next
+
+
                 Case "Bishop Structure "
                     For y = 0 To 7
                         line = LineInput(6)
@@ -374,6 +375,18 @@
                         Next
                         bcount -= 1
                     Next
+                Case "Start Queen Structure"
+                    For y = 0 To 7
+                        line = LineInput(6)
+                        SplitLine = Split(line, ", ")
+                        For x = 0 To 7
+                            If SplitLine(x) <> "" Then
+                                wQueenStartStructureScores(x, y) = SplitLine(x)
+                                bQueenStartStructureScores(x, bcount) = SplitLine(x)
+                            End If
+                        Next
+                        bcount -= 1
+                    Next
                 Case "Rook Structure "
                     For y = 0 To 7
                         line = LineInput(6)
@@ -392,7 +405,7 @@
                     Next
             End Select
 
-            
+
         Loop
         
         FileClose(6)
@@ -458,34 +471,43 @@
 
         End If
         reset()
-        If settings.Playing_Agaisnt_AI = True Then
+        If MAIN_MENU.settings.Playing_Agaisnt_AI = True Then
             Do Until whosgo <> AIPLAYER.get_team
 
 
                 all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
                 board = BookMovesPlayModule.PlayBookMoveYorN(rounds, board, outofbook, AIPLAYER, BookMoveCount, whosgo)
+                If board Is Nothing Then
+                    Exit Do
+                End If
                 whosgo = switchgoes(whosgo)
                 rounds += 1
                 reset()
                 Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
             Loop
         End If
-
-        reset()
-        Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
-        all_move_LIST.Clear()
-        all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
-        ogcastlingrights = board_info.castlingrights
-        display_round_data()
+        If board Is Nothing Then
+        Else
+            reset()
+            Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
+            all_move_LIST.Clear()
+            all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
+            ogcastlingrights = board_info.castlingrights
+            display_round_data()
+        End If
+        
 
         If checkmate = True Then
-            MsgBox("GAME OVER: " & incheckpiece.team & " won")
+            WinningScreen.Show()
+
             FEN_STRING = FEN_STRING_USE.Save_board(board)
             FileOpen(1, "D:\FEN BOARD SAVE FILES.txt", OpenMode.Append)
             PrintLine(1, FEN_STRING & "   |   WIN")
-            MsgBox("Saved Fen In FEN BOARD SAVE FILES.txt")
-
             FileClose(1)
+            Do Until Me.CloseGame = True
+                Application.DoEvents()
+            Loop
+
             Me.Close()
 
             Exit Sub
@@ -512,8 +534,8 @@
                     team_in_check = "White"
             End Select
         End If
-        If Me.settings.DisplayDefaultdata = True Then
-            If Me.settings.DisplayAdvancedData = True Then
+        If MAIN_MENU.settings.DisplayDefaultdata = True Then
+            If MAIN_MENU.settings.DisplayAdvancedData = True Then
                 'advanced data
 
             Else
@@ -590,7 +612,7 @@
             rounds += 1
             Me.isselectedownalready = False
 
-            If settings.Playing_Agaisnt_AI = True Then
+            If MAIN_MENU.settings.Playing_Agaisnt_AI = True Then
                 If whosgo = AIPLAYER.get_team Then
                     board = AIPLAYER.get_AImove(Me.board)
 
@@ -1061,7 +1083,7 @@
 
             If M.target.sym <> "_" Then
                 list_counter(depth_counter).captures += 1
-               
+
             End If
 
             board = changeboard.efficient_change_board(board, M)
@@ -1069,7 +1091,7 @@
 
 
             whosgo__ = switchgoes(whosgo__)
-            
+
             list_of_amount_of_moves(count, 0) = create_pos_letter(M.origin.x, M.origin.y) & "" & create_pos_letter(M.target.x, M.target.y)
 
             recurvive_search(depth - 1, depth_count, whosgo__, list_of_amount_of_moves, depth_counter + 1, count, list_counter, fullcount)
@@ -1173,7 +1195,7 @@
                     Case 2
                         list_counter(depth_counter).castles += 1
                 End Select
-                
+
                 If M.target.sym <> "_" Then
                     list_counter(depth_counter).captures += 1
                 End If
@@ -1189,7 +1211,7 @@
 
                 whosgo__ = switchgoes(whosgo__)
                 board = changeboard.efficient_undo_board(board, M)
-                
+
 
 
 
@@ -1266,6 +1288,7 @@
         first_time = True
         checked = False
         checkmate = False
+        list.Clear()
         For y = 0 To 7
             For x = 0 To 7
                 If board(x, y).getsym = "k" Then
@@ -1286,15 +1309,15 @@
 
             Next
         Next
-        
-     
+
+
         board(whitekingloc.x, whitekingloc.y).getmoves.Clear()
         board(blackkingloc.x, blackkingloc.y).getmoves.Clear()
         first_time = False
 
         board(whitekingloc.x, whitekingloc.y).calculatemoves(board, whosgo)
         board(blackkingloc.x, blackkingloc.y).calculatemoves(board, whosgo)
-       
+
         If checked = True Then
 
             Dim isok As Boolean = False
@@ -1433,44 +1456,76 @@
 
         End Select
     End Function
-    
+
     Sub SetUpTeams()
 
     End Sub
+    Private Sub SetUpDrawArrows()
+        For II = 0 To DrawableArrows.Length - 1
+            DrawableArrows(II) = New Arrow
+        Next
+    End Sub
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Me.AssetFolderPath = load_game.get_asset_folder_name
+        WhosWinningTB.SetBounds(14, 55, 26, 292)
+        MiddleLineTB.SetBounds(14, 292 + 55, 26, 2)
         load_game.load_settings_from_file()
-
+        Me.reset()
+        Me.rounds = 0
+        Me.changboardcount = 0
         whosgo = 1
+        WhiteT.GameAliasC("Guest")
+        WhiteT.EloC(1500)
+        WhiteT.ProfilePicPATH(MAIN_MENU.settings.AssetPATH & "DefaultPP.png")
+        blackT.GameAliasC(MAIN_MENU.loggedInUser.GameAliasC)
+        blackT.EloC(MAIN_MENU.loggedInUser.EloC)
+        blackT.ProfilePicPATH(MAIN_MENU.loggedInUser.ProfilePicPATH)
+        Me.MoveLabel.Text = ""
 
-
-
-
-
-        If Me.settings.Playing_Agaisnt_AI = True Then
+        AIPLAYER = New AI(1)
+        AIPLAYER.set_team(0)
+        If MAIN_MENU.settings.Playing_Agaisnt_AI = True Then
             ListOfAllMasterGames = New List(Of String)
-            ListOfAllMasterGames = ficsfileconverter.ConvertFileFromFicsRAWToEachLine(AssetFolderPath & "grandmastergames.PGN", Me.ListOfAllMasterGames)
-            AIPLAYER = New AI(1)
-            AIPLAYER.set_team(0)
+            ListOfAllMasterGames = ficsfileconverter.ConvertFileFromFicsRAWToEachLine(MAIN_MENU.settings.AssetPATH & "grandmastergames.PGN", Me.ListOfAllMasterGames)
+            
             Select Case AIPLAYER.get_team
                 Case 0
                     WhiteT.GameAliasC("CPU")
                     WhiteT.EloC(1500)
-                    WhiteT.ProfilePicPATH(AssetFolderPath & "logo.png")
+                    WhiteT.ProfilePicPATH(MAIN_MENU.settings.AssetPATH & "logo.png")
+                    If MAIN_MENU.LoggedIn = True Then
+                    Else
+                        blackT.GameAliasC("Guest")
+                        blackT.EloC(0)
+                        blackT.ProfilePicPATH(MAIN_MENU.settings.AssetPATH & "DefaultPP.png")
+                    End If
                 Case 1
                     blackT.GameAliasC("CPU")
                     blackT.EloC(1500)
-                    blackT.ProfilePicPATH(AssetFolderPath & "logo.png")
+                    blackT.ProfilePicPATH(MAIN_MENU.settings.AssetPATH & "logo.png")
+                    If MAIN_MENU.LoggedIn = True Then
+                    Else
+                        WhiteT.GameAliasC("Guest")
+                        WhiteT.EloC(0)
+                        WhiteT.ProfilePicPATH(MAIN_MENU.settings.AssetPATH & "DefaultPP.png")
+                    End If
             End Select
 
             Me.InitiatePieceStructures()
-        ElseIf Me.settings.AI_vs_AI = True Then
+        ElseIf MAIN_MENU.settings.AI_vs_AI = True Then
             AIPLAYER = New AI(1)
             Aiplayer2 = New AI(1)
             Aiplayer2.set_team(0)
 
         End If
-        If Me.settings.using_FEN = True Then
+
+        Me.WhiteteamPP.Image = Image.FromFile(WhiteT.ProfilePicPATH)
+        Me.WhiteteamPP.SizeMode = PictureBoxSizeMode.StretchImage
+        Me.BlackteamPP.SizeMode = PictureBoxSizeMode.StretchImage
+        Me.BlackteamPP.Image = Image.FromFile(blackT.ProfilePicPATH)
+
+        Me.WhiteTeamGameTag.Text = Me.WhiteT.GameAliasC
+        Me.BlackTeamGameTag.Text = Me.blackT.GameAliasC
+        If MAIN_MENU.settings.using_FEN = True Then
             board = FEN_STRING_USE.Setboard(board)
             Me.outofbook = True
         Else
@@ -1478,7 +1533,7 @@
         End If
         Me.CurrentGame = New game(1, "", blackT, WhiteT)
 
-        If settings.calculating_all_moves_for_test = True Then
+        If MAIN_MENU.settings.calculating_all_moves_for_test = True Then
             drawboard(board)
 
 
@@ -1488,7 +1543,7 @@
 
             CurrentHash = ZobristHashingModule.HashBoard(board)
 
-
+            SetUpDrawArrows()
             'createboard2()
             Game()
         End If
@@ -1554,14 +1609,14 @@
         End If
     End Sub
 
-    Private Sub Aivsaibutton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Aivsaibutton.Click
-        If settings.Playing_Agaisnt_AI = True Then
+    Private Sub Aivsaibutton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        If MAIN_MENU.settings.Playing_Agaisnt_AI = True Then
             whosgo = AIPLAYER.get_team
             AIPLAYER.get_AImove(board)
             Me.addround()
 
 
-        ElseIf settings.AI_vs_AI = True Then
+        ElseIf MAIN_MENU.settings.AI_vs_AI = True Then
             If whosgo = AIPLAYER.get_team Then
                 AIPLAYER.get_AImove(board)
                 Me.addround()
@@ -1580,5 +1635,92 @@
 
     Private Sub ShowOpeningMovesButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ShowOpeningMovesButt.Click
         MsgBox(AIPLAYER.GetOpeningMovelist)
+    End Sub
+
+    Private Sub Form1_FormClosed(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles MyBase.FormClosed
+        MAIN_MENU.Games(MAIN_MENU.Games.Length - 1) = New game(1, "", blackT, WhiteT)
+        MAIN_MENU.Games(MAIN_MENU.Games.Length - 1) = CurrentGame
+    End Sub
+
+    Private Sub UndoMoveButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles UndoMoveButt.Click
+
+        
+        UndoCount += 1
+        If CurrentGame.GameMoveStringC.Count - UndoCount >= 0 Then
+
+            board = efficient_undo_board(board, CurrentGame.GameMoveStringC(CurrentGame.GameMoveStringC.Count - UndoCount).move)
+
+            whosgo = switchgoes(whosgo)
+            Me.Text = Convert.ToString(CurrentHash, 2).PadLeft(64, "0")
+            all_move_LIST.Clear()
+            all_move_LIST = calculate_all_moves(board, whosgo, all_move_LIST, False)
+            ogcastlingrights = board_info.castlingrights
+            display_round_data()
+        Else
+            undoRestart = True
+
+        End If
+        If undoRestart = True Then
+            UndoCount = 0
+            undoRestart = False
+        End If
+    End Sub
+
+    Private Sub UndoMoveButt_MouseHover(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles UndoMoveButt.MouseEnter
+        UndoMoveButt.BorderStyle = BorderStyle.Fixed3D
+    End Sub
+
+    Private Sub UndoMoveButt_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles UndoMoveButt.MouseLeave
+        UndoMoveButt.BorderStyle = BorderStyle.FixedSingle
+    End Sub
+    Public Redoing As Boolean = False
+    Private Sub RedoButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RedoButt.Click
+
+        If UndoCount >= 0 Then
+            Redoing = True
+
+
+            board = efficient_change_board(board, CurrentGame.GameMoveStringC((CurrentGame.GameMoveStringC.Count - 1) - UndoCount).move)
+            whosgo = switchgoes(whosgo)
+            Redoing = False
+            UndoCount -= 1
+        End If
+
+        If UndoCount < 0 Then
+            UndoCount = 0
+        End If
+
+    End Sub
+
+    Private Sub RedoButt_MouseHover(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RedoButt.MouseEnter
+        RedoButt.BorderStyle = BorderStyle.Fixed3D
+    End Sub
+
+    Private Sub RedoButt_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RedoButt.MouseLeave
+        RedoButt.BorderStyle = BorderStyle.FixedSingle
+    End Sub
+
+    Private Sub ExitButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitButt.Click
+        Me.Close()
+    End Sub
+
+    Private Sub ExitButt_MouseEnter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitButt.MouseEnter
+        ExitButt.BorderStyle = BorderStyle.Fixed3D
+    End Sub
+
+    Private Sub ExitButt_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitButt.MouseLeave
+        ExitButt.BorderStyle = BorderStyle.FixedSingle
+    End Sub
+
+    Private Sub NewGameButt_MouseEnter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewGameButt.MouseEnter
+        NewGameButt.BorderStyle = BorderStyle.Fixed3D
+    End Sub
+
+    Private Sub NewGameButt_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewGameButt.MouseLeave
+        NewGameButt.BorderStyle = BorderStyle.FixedSingle
+    End Sub
+
+    Private Sub NewGameButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles NewGameButt.Click
+        MAIN_MENU.NewGame()
     End Sub
 End Class

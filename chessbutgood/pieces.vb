@@ -74,33 +74,33 @@
         Select Case Me.getsym
             Case "p"
                 If Me.Team = 0 Then
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wpawnselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitepawn100take.png")
                 Else
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bpawnselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackpawn100take.png")
                 End If
             Case "c"
                 If Me.Team = 0 Then
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wcastleselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitecastle100take.png")
                 Else
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bcastleselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackcastle100take.png")
                 End If
             Case "b"
                 If Me.Team = 0 Then
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wbichselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitebishop100take.png")
                 Else
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bbichselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackbishop100take.png")
                 End If
             Case "h"
                 If Me.Team = 0 Then
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "whorseselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitehorse100take.png")
                 Else
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bhorseselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitebishop100take.png")
                 End If
             Case "q"
                 If Me.Team = 0 Then
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wqueenselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitequeen100take.png")
                 Else
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bqueenselected.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackqueen100take.png")
                 End If
             Case "_"
                 Me.images.Image = Image.FromFile(Form1.selectedblankfile)
@@ -193,57 +193,50 @@
         Next
         Return False
     End Function
-    Private Sub PictureBox1_Click(ByVal sender As Object, ByVal e As EventArgs)
+    Private Sub PictureBox1_DClick(ByVal sender As Object, ByVal e As EventArgs)
+        MsgBox("Symbal: " & Me.symbal & vbCrLf & "Team: " & Me.Team & vbCrLf & "Has Moved?: " & Me.hasmoved & vbCrLf & "X: " & Me.xpos & vbCrLf & "Y: " & Me.ypos)
+    End Sub
+    Private Sub PictureBox1_Click(ByVal sender As Object, ByVal e As MouseEventArgs)
         Form1.PieceInfo.Text = "Piece Info: " & Me.symbal & vbCrLf & "Has Moved: " & Me.hasmoved & vbCrLf & "Is Pinned: " & Me.ispinned
-
-        If Form1.isselectedownalready = False Then
-            'MsgBox(Me.getsym) 'when u click on a piece displays the sym
-            If Me.getteam = Form1.whosgo Then
-                Form1.isselectedownalready = True
-                Me.drawavaliblemoves(Me.move)
-                Form1.pieceselected = Me.dupe
-            End If
-        Else
-            'If changeboard2(Me.symbal, Me.Team, Me.getx, Me.gety) = True Then
-            If Me.getteam = Form1.whosgo Then
-                If IsNothing(Form1.pieceselected.move) = False Then
-
-                    Form1.deletemoves(Form1.pieceselected.move, Form1.board)
+        If e.Button = Windows.Forms.MouseButtons.Left Then
+            If Form1.isselectedownalready = False Then
+                'MsgBox(Me.getsym) 'when u click on a piece displays the sym
+                If Me.getteam = Form1.whosgo Then
+                    Form1.isselectedownalready = True
+                    Me.drawavaliblemoves(Me.move)
+                    Form1.pieceselected = Me.dupe
                 End If
-
-                Form1.pieceselected = Me.dupe
-                Me.drawavaliblemoves(Me.move)
             Else
-                If Me.ispickedokay = True Then
-                    Dim pos As Form1.position
-                    pos.x = Me.xpos
-                    pos.y = Me.ypos
-                    pos.sym = Me.symbal
-                    pos.team = Me.Team
-                    If Form1.pieceselected.symbal = "k" And (Me.xpos = Form1.pieceselected.xpos + 2 Or Me.xpos = Form1.pieceselected.xpos - 2) Then
-                        pos.SpecialMove = 2
+                'If changeboard2(Me.symbal, Me.Team, Me.getx, Me.gety) = True Then
+                If Me.getteam = Form1.whosgo Then
+                    If IsNothing(Form1.pieceselected.move) = False Then
+
+                        Form1.deletemoves(Form1.pieceselected.move, Form1.board)
                     End If
-                    If Form1.pieceselected.symbal = "p" Then
-                        If Me.xpos <> Form1.pieceselected.xpos And Me.symbal = "_" Then
-                            pos.SpecialMove = 1
+
+                    Form1.pieceselected = Me.dupe
+                    Me.drawavaliblemoves(Me.move)
+                Else
+                    If Me.ispickedokay = True Then
+                        Dim pos As Form1.position
+                        pos.x = Me.xpos
+                        pos.y = Me.ypos
+                        pos.sym = Me.symbal
+                        pos.team = Me.Team
+                        If Form1.pieceselected.symbal = "k" And (Me.xpos = Form1.pieceselected.xpos + 2 Or Me.xpos = Form1.pieceselected.xpos - 2) Then
+                            pos.SpecialMove = 2
                         End If
-                    End If
+                        If Form1.pieceselected.symbal = "p" Then
+                            If Me.xpos <> Form1.pieceselected.xpos And Me.symbal = "_" Then
+                                pos.SpecialMove = 1
+                            End If
+                        End If
 
-                    changeboard.efficient_change_board(Form1.board, convert_pos_to_move(pos))
+                        changeboard.efficient_change_board(Form1.board, convert_pos_to_move(pos))
 
-                    If Me.getsym = "p" Then
-                        If Me.getteam = 0 And Me.gety = 7 Then
-                            If Form1.settings.Playing_Agaisnt_AI <> True Then
-                                Promotion.team_of_proting_pawn = 0
-                                Promotion.promotion_place.x = Me.getx
-                                Promotion.promotion_place.y = Me.gety
-                                Promotion.Show()
-                                Do Until Form1.confirmed = True
-                                    Application.DoEvents()
-                                Loop
-                            Else
-                                If Form1.AIPLAYER.get_team <> Me.getteam Then
-
+                        If Me.getsym = "p" Then
+                            If Me.getteam = 0 And Me.gety = 7 Then
+                                If MAIN_MENU.settings.Playing_Agaisnt_AI <> True Then
                                     Promotion.team_of_proting_pawn = 0
                                     Promotion.promotion_place.x = Me.getx
                                     Promotion.promotion_place.y = Me.gety
@@ -251,29 +244,27 @@
                                     Do Until Form1.confirmed = True
                                         Application.DoEvents()
                                     Loop
+                                Else
+                                    If Form1.AIPLAYER.get_team <> Me.getteam Then
+
+                                        Promotion.team_of_proting_pawn = 0
+                                        Promotion.promotion_place.x = Me.getx
+                                        Promotion.promotion_place.y = Me.gety
+                                        Promotion.Show()
+                                        Do Until Form1.confirmed = True
+                                            Application.DoEvents()
+                                        Loop
 
 
 
 
 
+                                    End If
                                 End If
-                            End If
 
 
-                        ElseIf Me.getteam = 1 And Me.gety = 0 Then
-                            If Form1.settings.Playing_Agaisnt_AI = False Then
-
-                                Promotion.team_of_proting_pawn = 1
-                                Promotion.promotion_place.x = Me.getx
-                                Promotion.promotion_place.y = Me.gety
-                                Promotion.Show()
-                                Do Until Form1.confirmed = True
-                                    Application.DoEvents()
-                                Loop
-                            Else
-
-
-                                If Form1.AIPLAYER.get_team <> Me.getteam Then
+                            ElseIf Me.getteam = 1 And Me.gety = 0 Then
+                                If MAIN_MENU.settings.Playing_Agaisnt_AI = False Then
 
                                     Promotion.team_of_proting_pawn = 1
                                     Promotion.promotion_place.x = Me.getx
@@ -282,25 +273,57 @@
                                     Do Until Form1.confirmed = True
                                         Application.DoEvents()
                                     Loop
+                                Else
+
+
+                                    If Form1.AIPLAYER.get_team <> Me.getteam Then
+
+                                        Promotion.team_of_proting_pawn = 1
+                                        Promotion.promotion_place.x = Me.getx
+                                        Promotion.promotion_place.y = Me.gety
+                                        Promotion.Show()
+                                        Do Until Form1.confirmed = True
+                                            Application.DoEvents()
+                                        Loop
 
 
 
 
+
+                                    End If
 
                                 End If
 
+
                             End If
 
-
                         End If
+                        Form1.deletemoves(Form1.pieceselected.move, Form1.board)
 
+                        Form1.Game()
                     End If
-                    Form1.deletemoves(Form1.pieceselected.move, Form1.board)
+                End If
+            End If
+        ElseIf e.Button = Windows.Forms.MouseButtons.Right Then
+            If Form1.CurrentArrowPointer < Form1.DrawableArrows.Length - 1 Then
+                If Form1.ArrowEndOrStart = True Then
 
-                    Form1.Game()
+
+                    Form1.DrawableArrows(Form1.CurrentArrowPointer).SetEnd(Me.xpos, Me.ypos)
+                    '---------------------------------
+                    Form1.ArrowEndOrStart = False
+                    Form1.CurrentArrowPointer += 1
+                Else
+                    Form1.ArrowEndOrStart = True
+                    Form1.DrawableArrows(Form1.CurrentArrowPointer).SetStart(Me.xpos, Me.ypos)
+
+
+
+
                 End If
             End If
         End If
+        
 
 
     End Sub
@@ -322,6 +345,48 @@
 
         Return move
     End Function
+    Public Sub DrawPreviousMove(ByVal ForT As String)
+        Select Case ForT
+            Case "F"
+                Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackpreviousMove100.png")
+            Case "T"
+                Select Case Me.getsym
+                    Case "p"
+                        If Me.Team = 0 Then
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitepawn100moved.png")
+                        Else
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackpawn100moved.png")
+                        End If
+                    Case "c"
+                        If Me.Team = 0 Then
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitecastle100moved.png")
+                        Else
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackcastle100moved.png")
+                        End If
+                    Case "b"
+                        If Me.Team = 0 Then
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitebishop100moved.png")
+                        Else
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackbishop100moved.png")
+                        End If
+                    Case "h"
+                        If Me.Team = 0 Then
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitehorse100moved.png")
+                        Else
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitebishop100moved.png")
+                        End If
+                    Case "q"
+                        If Me.Team = 0 Then
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "whitequeen100moved.png")
+                        Else
+                            Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "blackqueen100moved.png")
+                        End If
+                    Case "_"
+                        Me.images.Image = Image.FromFile(Form1.selectedblankfile)
+                End Select
+
+        End Select
+    End Sub
     Private Sub change_al_pasent(ByVal movex As Integer, ByVal movey As Integer, ByVal teamtaking As Integer)
         Select Case teamtaking
             Case 0
@@ -612,19 +677,19 @@
     Public Sub changekingtochecked(ByVal x, ByVal y)
         If Form1.checked = True And Form1.board(x, y).getsym = "k" Then
 
-            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(Form1.AssetFolderPath & "wking.png")
-            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(Form1.AssetFolderPath & "bking.png")
+            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(MAIN_MENU.settings.AssetPATH & "wking.png")
+            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(MAIN_MENU.settings.AssetPATH & "bking.png")
             Select Case Me.Team
                 Case 0
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "wkingchecked.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "wkingchecked.png")
                 Case 1
-                    Me.images.Image = Image.FromFile(Form1.AssetFolderPath & "bkingchecked.png")
+                    Me.images.Image = Image.FromFile(MAIN_MENU.settings.AssetPATH & "bkingchecked.png")
             End Select
 
 
         Else
-            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(Form1.AssetFolderPath & "wking.png")
-            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(Form1.AssetFolderPath & "bking.png")
+            Form1.board(Form1.whitekingloc.x, Form1.whitekingloc.y).set_image(MAIN_MENU.settings.AssetPATH & "wking.png")
+            Form1.board(Form1.blackkingloc.x, Form1.blackkingloc.y).set_image(MAIN_MENU.settings.AssetPATH & "bking.png")
         End If
     End Sub
     Public Sub drawimages(ByVal x, ByVal y, ByVal count)
@@ -632,10 +697,11 @@
 
  
 
-        Me.images.SetBounds((x * 76) + 175 + (x * 1.1), (y * 76) + 40 + (y * 1.1), 76, 76)
-        Me.images.BackgroundImageLayout = ImageLayout.Stretch
+        Me.images.SetBounds((x * 75) + 48 + (-(x) + 4), (y * 74) + 55 + (-y), 75, 75)
+        Me.images.SizeMode = PictureBoxSizeMode.StretchImage
         Me.images.BackColor = Color.Transparent
         AddHandler Me.images.Click, AddressOf PictureBox1_Click
+        AddHandler Me.images.DoubleClick, AddressOf PictureBox1_DClick
         Form1.Controls.Add(Me.images)
     End Sub
     Public Function getimage()

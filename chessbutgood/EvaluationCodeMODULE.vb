@@ -8,7 +8,7 @@
 
         If WhosTurn = 0 Then Perspective = 1 Else Perspective = -1
 
-        Score = ((MaterialEval(board) * Form1.EndGameWieght) + PieceStructure(board, WhosTurn) + PushKingToCorner(board, WhosTurn) + bringkingscloser(board, WhosTurn)) * Perspective
+        Score = (MaterialEval(board) + PieceStructure(board, WhosTurn) + PushKingToCorner(board, WhosTurn) + bringkingscloser(board, WhosTurn) + -KingSafety(board, WhosTurn)) * Perspective
         Return Score
     End Function
     Public Sub SetEndGameWieght(ByVal board(,) As theboardclass)
@@ -89,8 +89,17 @@
         Dim MaterialScore As Integer
         Dim BlackCountNow As Form1.piececount = Form1.AIPLAYER.countpieces(board, 1)
         Dim WhiteCountNow As Form1.piececount = Form1.AIPLAYER.countpieces(board, 0)
+        If Form1.changboardcount > 10 Then
+            If Form1.GAMEPoint = "START" Then
+                Form1.GAMEPoint = "MID"
+            End If
+
+        End If
         If BlackCountNow.QueenCount = 0 And WhiteCountNow.QueenCount = 0 Then
-            Form1.GAMEPoint = "END"
+            If Form1.GAMEPoint <> "END" Then
+                Form1.GAMEPoint = "END"
+            End If
+
         End If
 
 
@@ -142,6 +151,7 @@
                                 Case "START"
                                     blackstructure += Form1.bKingSTARTStructureScores(x, y)
                                 Case "MID"
+                                    blackstructure += Form1.bKingSTARTStructureScores(x, y)
                                 Case "END"
                                     blackstructure += Form1.bKingENDStructureScores(x, y)
                             End Select
@@ -159,7 +169,12 @@
                         Case "h"
                             whitestructure += Form1.wBishopStructureScore(x, y)
                         Case "q"
-                            whitestructure += Form1.wQueenStructureScores(x, y)
+                            Select Case Form1.GAMEPoint
+                                Case "START"
+                                    whitestructure += Form1.wQueenStartStructureScores(x, y)
+                                Case Else
+                                    whitestructure += Form1.wQueenStructureScores(x, y)
+                            End Select
                         Case "k"
                             Select Case Form1.GAMEPoint
                                 Case "START"
@@ -194,4 +209,76 @@
         Next
         Return count
     End Function
+    Public Function KingSafety(ByVal board(,) As theboardclass, ByVal Whosgo As Integer)
+        Dim score As Integer = 0
+        Dim ValueOfAttack As Integer
+        Dim SquareAttackcount As Integer
+        Dim KingZone As New List(Of Form1.BasicPosition)
+        Dim TempPos As Form1.BasicPosition
+        Dim Value As Integer
+        Dim isokay As Boolean = False
+        Dim AttackingWieght() As Integer = {0, 0, 50, 75, 88, 94, 97, 99}
+        Select Case Whosgo
+            Case 0
+                For Each Pos In board(Form1.whitekingloc.x, Form1.whitekingloc.y).getmoves
+
+                    TempPos.X = Pos.x
+                    TempPos.y = Pos.y
+                    KingZone.Add(TempPos)
+
+                Next
+                
+
+
+
+            Case 1
+                For Each Pos In board(Form1.blackkingloc.x, Form1.blackkingloc.y).getmoves
+
+                    TempPos.X = Pos.x
+                    TempPos.y = Pos.y
+                    KingZone.Add(TempPos)
+
+                Next
+        End Select
+        For x = 0 To 7
+            For y = 0 To 7
+
+                If board(x, y).getteam <> 2 And board(x, y).getteam <> Whosgo Then
+                    isokay = False
+                    For Each AttackingSquare In board(x, y).getmoves
+                        For Each Pos In KingZone
+                            If AttackingSquare.x = Pos.X And AttackingSquare.y = Pos.y Then
+                                If isokay = False Then
+                                    SquareAttackcount += 1
+                                End If
+                                ValueOfAttack += GetValueKS(board(x, y).getsym)
+                                isokay = True
+                            End If
+                        Next
+                    Next
+
+
+                End If
+            Next
+        Next
+        KingZone = Nothing
+        score = ValueOfAttack * AttackingWieght(SquareAttackcount) / 100
+       
+        Return score
+    End Function
+    Private Function GetValueKS(ByVal sym As String)
+        Select Case sym
+            Case "h"
+                Return 20
+            Case "c"
+                Return 40
+            Case "q"
+                Return 80
+            Case "b"
+                Return 20
+            Case Else
+                Return 0
+        End Select
+    End Function
+
 End Module

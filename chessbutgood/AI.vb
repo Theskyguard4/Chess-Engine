@@ -655,7 +655,7 @@
                 End If
             Else
                 If check_if_in(Form1.WHITEPawnmoves, pos) = True Then
-
+                    Move.movescore -= get_piece_value(Move.origin.sym)
                 End If
             End If
 
@@ -918,7 +918,7 @@
         If Move.origin.sym = "" Then
             MsgBox("GAME ERROR: No Move Given (CODE: 1)")
         End If
-        Label_text &= "Nodes Checked: " & count & vbCrLf & "Move piece: " & Move.origin.sym & vbCrLf & "From: " & Move.origin.x & "," & Move.origin.y & vbCrLf & "To: " & Move.target.x & "," & Move.target.y & vbCrLf & "Target Sqr: " & Move.target.sym & vbCrLf & "Castling Rights: " & Form1.board_info.castlingrights & vbCrLf & "Score: " & score & vbCrLf & "Depth: " & depth & vbCrLf & "Book Move: " & isbookmove & vbCrLf & "Change Count: " & Form1.changboardcount & vbCrLf & "Time Taken: " & time / 10 & "s" & vbCrLf & "TT Hits: " & Form1.TTHITCount & vbCrLf & "TT Size: " & Form1.TTSize
+        Label_text &= "Nodes Checked: " & count & " - Score: " & score & " - Depth: " & depth & " - Book Move: " & isbookmove & " - Time Taken: " & time / 10 & "s" & " TT Table Hit: " & Form1.TTHITCount
         Form1.Ai_information_label.Text = Label_text
 
     End Sub

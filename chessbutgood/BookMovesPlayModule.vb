@@ -5,7 +5,7 @@
 
         If outofbook = False Then
             MoveNum += 1
-            If round < 16 Then
+            If round < 20 Then
 
                 If MoveNum = 1 Then
                     Form1.BookMoveCount = 2
@@ -25,12 +25,17 @@
 
                     move = ConvertStringToPos(Form1.AIPLAYER.GetBookMove(Form1.BookMoveCount), whosturn, Form1.all_move_LIST, True)
                     If move.origin.sym <> "x" Then
+                        Form1.is_ai_calulating = True
+
                         board = efficient_change_board(board, move)
                         Dim NewMovesList As New List(Of Form1.Efficient_moves)
+                        whosturn = Form1.switchgoes(whosturn)
                         NewMovesList = Form1.calculate_all_moves(board, whosturn, NewMovesList, False)
+
+
                         For Each M In NewMovesList
                             If M.target.sym <> "_" Then
-                                If Form1.GetPieceValue(M.target.sym) > 0 Then
+                                If Form1.GetPieceValue(M.target.sym) > 0 And Form1.GetPieceValue(M.origin.sym) < Form1.GetPieceValue(M.target.sym) Then
                                     is_okay = False
                                 End If
                             End If
@@ -38,14 +43,21 @@
                                 is_okay = False
                             End If
                         Next
+                        whosturn = Form1.switchgoes(whosturn)
+                        Form1.reset()
+                        move.OriginBoardInfo.castlingrights = Form1.board_info.castlingrights
                         If is_okay = True Then
+                            board = efficient_undo_board(board, move)
+                            Form1.is_ai_calulating = False
+                            board = efficient_change_board(board, move)
                             Form1.AIPLAYER.Write_AI_Info(move, Form1.BookMoveCount, 0, 1, True, 0)
                             Return board
                         Else
-                            move.OriginBoardInfo.castlingrights = ""
+
                             board = efficient_undo_board(board, move)
+                            Form1.is_ai_calulating = False
                         End If
-                        
+
 
                     End If
 
@@ -55,6 +67,9 @@
             End If
         End If
         outofbook = True
+        If Form1.checkmate = True Then
+            Return Nothing
+        End If
         Return AiPlayer.get_AImove(board)
     End Function
     Public Function getNextMove(ByVal list_of_Moves As List(Of Form1.Efficient_moves), ByVal move_num As Integer)
@@ -71,7 +86,7 @@
         Randomize()
         AvalibleGames = CreateListOfGamesWithResponce(Move_Notation, OpeningsList, AvalibleGames, board, whosturn)
         Do Until isokayopening = True
-            randomnum = Int(Rnd() * AvalibleGames.Count - 1)
+            randomnum = Int((Rnd() * AvalibleGames.Count - 2) + 1)
             If AvalibleGames(randomnum).Count > 20 Then
                 isokayopening = True
             End If

@@ -26,7 +26,7 @@
     Public Sub GameMoveStringC(ByVal GMS As List(Of Form1.RedoUndoMoveData))
         Me.GameMovesString = GMS
     End Sub
-    Public Function GameMoveStringC()
+    Public Function GameMoveStringC() As List(Of Form1.RedoUndoMoveData)
         Return Me.GameMovesString
     End Function
 

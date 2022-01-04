@@ -241,9 +241,64 @@
     Public Function efficient_change_board(ByVal the_board(,) As theboardclass, ByRef Move As Form1.Efficient_moves)
         Form1.rounds += 1
         Form1.changboardcount += 1
+        If Form1.Redoing = False Then
+            If Form1.UndoCount <> 0 Then
+                If Form1.UndoCount = Form1.CurrentGame.GameMoveStringC.Count Then
+                    Form1.CurrentGame.GameMoveStringC.Clear()
+                Else
+                    Form1.changboardcount -= Form1.UndoCount
+                    Form1.CurrentGame.GameMoveStringC.RemoveRange(Form1.CurrentGame.GameMoveStringC.Count - Form1.UndoCount, Form1.UndoCount)
+
+                End If
+
+                Form1.UndoCount = 0
+                Form1.MoveLabel.Text = ""
+                For II = 0 To Form1.CurrentGame.GameMoveStringC.Count - 1
+                    If II Mod 2 <> 0 And II <> 1 Then
+                        Form1.MoveLabel.Text = Form1.MoveLabel.Text & vbCrLf & (II - 1) / 2 & ": " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).MoveNotation
+                    Else
+                        If Form1.MoveLabel.Text <> "" Then
+                            Form1.MoveLabel.Text = Form1.MoveLabel.Text & "      " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC().Count - 1).MoveNotation
+                        Else
+                            Form1.MoveLabel.Text = (II - 1) / 2 & ": " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC().Count - 1).MoveNotation
+                        End If
+
+                    End If
+                Next
+
+            End If
+        End If
+       
+        If Form1.is_ai_calulating = False Then
+            If Form1.changboardcount > 1 Then
+                the_board(Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).move.origin.x, Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).move.origin.y).resetimage()
+                the_board(Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).move.target.x, Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).move.target.y).resetimage()
+            End If
+
+            
+        End If
         Form1.PreviousMove = Move
         If Form1.is_ai_calulating = False Then
-            Form1.CurrentGame.AddMoveToGame(Move, Form1.all_move_LIST)
+            If Move.OriginBoardInfo.castlingrights = "" Or IsNothing(Move.OriginBoardInfo.castlingrights) = True Then
+                Move.OriginBoardInfo.castlingrights = ""
+            End If
+            If Form1.Redoing = False Then
+                Form1.CurrentGame.AddMoveToGame(Move, Form1.all_move_LIST)
+
+
+                If Form1.changboardcount Mod 2 <> 0 And Form1.changboardcount <> 1 Then
+                    Form1.MoveLabel.Text = Form1.MoveLabel.Text & vbCrLf & (Form1.changboardcount - 1) / 2 & ": " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC.Count - 1).MoveNotation
+                Else
+                    If Form1.MoveLabel.Text <> "" Then
+                        Form1.MoveLabel.Text = Form1.MoveLabel.Text & "      " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC().Count - 1).MoveNotation
+                    Else
+                        Form1.MoveLabel.Text = (Form1.changboardcount - 1) / 2 & ": " & Form1.CurrentGame.GameMoveStringC(Form1.CurrentGame.GameMoveStringC().Count - 1).MoveNotation
+                    End If
+
+                End If
+            End If
+            
+
         End If
       
 
@@ -317,6 +372,18 @@
                 End If
         End Select
         Form1.CurrentHash = ZobristHashingModule.UpdateHash(the_board, Move, Form1.CurrentHash)
+        If Form1.is_ai_calulating = False Then
+            For II = 0 To Form1.DrawableArrows.Length - 1
+                Form1.CurrentArrowPointer = 0
+                Form1.DrawableArrows(II).ClearArrow()
+            Next
+            Dim score As Integer = MaterialEval(the_board)
+
+            Form1.WhosWinningTB.SetBounds(14, 55, 26, 292 - score)
+            the_board(Move.origin.x, Move.origin.y).SetPreviousMove("F")
+            the_board(Move.target.x, Move.target.y).SetPreviousMove("T")
+
+        End If
         Return the_board
     End Function
 End Module

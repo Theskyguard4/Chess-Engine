@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AI.vb" />
+    <Compile Include="Arrow.vb" />
     <Compile Include="BookMovesPlayModule.vb" />
     <Compile Include="CalBoard.vb" />
     <Compile Include="changeboard.vb" />
@@ -110,11 +111,35 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ficsfileconverter.vb" />
+    <Compile Include="File_Lookup.Designer.vb">
+      <DependentUpon>File_Lookup.vb</DependentUpon>
+    </Compile>
+    <Compile Include="File_Lookup.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.vb">
       <DependentUpon>Form1.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ListofProfilesDisplay.Designer.vb">
+      <DependentUpon>ListofProfilesDisplay.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ListofProfilesDisplay.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PracticeForm.Designer.vb">
+      <DependentUpon>PracticeForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="PracticeForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RegisterAccount.Designer.vb">
+      <DependentUpon>RegisterAccount.vb</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterAccount.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="game.vb" />
@@ -171,6 +196,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="theboardclass.vb" />
+    <Compile Include="WinningScreen.Designer.vb">
+      <DependentUpon>WinningScreen.vb</DependentUpon>
+    </Compile>
+    <Compile Include="WinningScreen.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ZobristHashingModule.vb" />
   </ItemGroup>
   <ItemGroup>
@@ -180,8 +211,20 @@
     <EmbeddedResource Include="FEN_LIST.resx">
       <DependentUpon>FEN_LIST.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="File_Lookup.resx">
+      <DependentUpon>File_Lookup.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ListofProfilesDisplay.resx">
+      <DependentUpon>ListofProfilesDisplay.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PracticeForm.resx">
+      <DependentUpon>PracticeForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RegisterAccount.resx">
+      <DependentUpon>RegisterAccount.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="list_of_FENS.resx">
       <DependentUpon>list_of_FENS.vb</DependentUpon>
@@ -203,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Settings_menu.resx">
       <DependentUpon>Settings_menu.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinningScreen.resx">
+      <DependentUpon>WinningScreen.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

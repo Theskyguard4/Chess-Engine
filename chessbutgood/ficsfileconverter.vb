@@ -15,7 +15,7 @@
         For Each line In ListOfOpenings
             PrintLine(2, line)
         Next
-
+        FileClose(2)
 
         Return ListOfOpenings
     End Function
@@ -202,8 +202,11 @@
 
         If sym = "P" Then
             sym = ""
-        End If
 
+        End If
+        If move.target.sym <> "_" Then
+            sym = sym & "x"
+        End If
         Return (sym & NewString)
     End Function
     Private Function convertSym(ByVal sym As String)

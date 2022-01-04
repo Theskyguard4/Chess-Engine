@@ -24,16 +24,16 @@
         
 
         Try
-            FileOpen(2, Form1.AssetFolderPath & "settings.txt", OpenMode.Input)
-            FileClose(2)
+            FileOpen(5, MAIN_MENU.settings.AssetPATH & "settings.txt", OpenMode.Input)
+            FileClose(5)
             read_settingsfile()
         Catch ex As System.IO.FileNotFoundException
-            
+
             Write_settings_into_file(True)
 
 
         End Try
-
+        FileClose(5)
     End Sub
     Public Sub read_settingsfile() 'must be in default order, if not, delate file and rerun
         Dim count As Integer = 0
@@ -41,9 +41,9 @@
         Dim start As Integer
         Dim path As String
         Dim finish As Integer
-        FileOpen(2, Form1.AssetFolderPath & "settings.txt", OpenMode.Input)
-        Do Until EOF(2)
-            settings_line = LineInput(2)
+        FileOpen(6, MAIN_MENU.settings.AssetPATH & "settings.txt", OpenMode.Input)
+        Do Until EOF(6)
+            settings_line = LineInput(6)
             start = InStr(settings_line, "(") - 1
             finish = InStr(settings_line, ")") - 1
             If start < 0 Or finish < 0 Then
@@ -87,21 +87,21 @@
                     Form1.blankfile = path
 
                 Case 15
-                    Form1.settings.DisplayDefaultdata = path
+                    MAIN_MENU.settings.DisplayDefaultdata = path
                 Case 16
-                    Form1.settings.DisplayAdvancedData = path
+                    MAIN_MENU.settings.DisplayAdvancedData = path
                 Case 17
-                    Form1.settings.UseSetDepth = path
+                    MAIN_MENU.settings.UseSetDepth = path
                 Case 18
-                    Form1.settings.DepthSearchTimeMax = path
+                    MAIN_MENU.settings.DepthSearchTimeMax = path
                 Case 19
-                    Form1.settings.DepthSearchIntegerMax = path
+                    MAIN_MENU.settings.DepthSearchIntegerMax = path
                 Case 29 ' after all files
             End Select
             count += 1
             path = ""
         Loop
-        FileClose(2)
+        FileClose(6)
     End Sub
     Public Sub Write_settings_into_file(ByVal default_settingsbool As Boolean)
         Dim default_settings_str As String
@@ -109,43 +109,43 @@
         Select Case default_settingsbool
             Case True
 
-                Form1.whitepawnfile = Form1.AssetFolderPath & "wpawn.png"
-                Form1.blackpawnfile = Form1.AssetFolderPath & "bpawn.png"
+                Form1.whitepawnfile = MAIN_MENU.settings.AssetPATH & "whitepawn100.png"
+                Form1.blackpawnfile = MAIN_MENU.settings.AssetPATH & "blackpawn100.png"
 
-                Form1.whitekingfile = Form1.AssetFolderPath & "wking.png"
-                Form1.blackkingfile = Form1.AssetFolderPath & "bking.png"
+                Form1.whitekingfile = MAIN_MENU.settings.AssetPATH & "whiteking100.png"
+                Form1.blackkingfile = MAIN_MENU.settings.AssetPATH & "blackking100.png"
 
-                Form1.whitequeenfile = Form1.AssetFolderPath & "wqueen.png"
-                Form1.blackqueenfile = Form1.AssetFolderPath & "bqueen.png"
+                Form1.whitequeenfile = MAIN_MENU.settings.AssetPATH & "whitequeen100.png"
+                Form1.blackqueenfile = MAIN_MENU.settings.AssetPATH & "blackqueen100.png"
 
-                Form1.whitebishopfile = Form1.AssetFolderPath & "wbich.png"
-                Form1.blackbishopfile = Form1.AssetFolderPath & "bbich.png"
+                Form1.whitebishopfile = MAIN_MENU.settings.AssetPATH & "whitebishop100.png"
+                Form1.blackbishopfile = MAIN_MENU.settings.AssetPATH & "blackbishop100.png"
 
-                Form1.whitecastlefile = Form1.AssetFolderPath & "wcastle.png"
-                Form1.blackcastlefile = Form1.AssetFolderPath & "bcastle.png"
+                Form1.whitecastlefile = MAIN_MENU.settings.AssetPATH & "whitecastle100.png"
+                Form1.blackcastlefile = MAIN_MENU.settings.AssetPATH & "blackcastle100.png"
 
-                Form1.whitehorsefile = Form1.AssetFolderPath & "whorse.png"
-                Form1.blackhorsefile = Form1.AssetFolderPath & "bhorse.png"
+                Form1.whitehorsefile = MAIN_MENU.settings.AssetPATH & "whitehorse100.png"
+                Form1.blackhorsefile = MAIN_MENU.settings.AssetPATH & "blackhorse100.png"
 
-                Form1.selectedblankfile = Form1.AssetFolderPath & "selected.png"
-                Form1.blankfile = Form1.AssetFolderPath & "blankse.png"
-
-
-                Form1.settings.DisplayDefaultdata = True
-                Form1.settings.DisplayAdvancedData = False
-                Form1.settings.UseSetDepth = False
-                Form1.settings.DepthSearchTimeMax = 30
-                Form1.settings.DepthSearchIntegerMax = 4
+                Form1.selectedblankfile = MAIN_MENU.settings.AssetPATH & "selected.png"
+                Form1.blankfile = MAIN_MENU.settings.AssetPATH & "blankse.png"
 
 
-                FileOpen(2, Form1.AssetFolderPath & "settings.txt", OpenMode.Output)
-                default_settings_str = ("-Board_file_name- ( " & "" & ")" & vbCrLf & "-White_Pawn_file_name- (" & Form1.whitepawnfile & ")" & vbCrLf & "-Black_Pawn_file_name- (" & Form1.blackpawnfile & ")" & vbCrLf & "-White_King_file_name- (" & Form1.whitekingfile & ")" & vbCrLf & "-Black_King_file_name- (" & Form1.blackkingfile & ")" & vbCrLf & "-White_Castle_file_name- (" & Form1.whitecastlefile & ")" & vbCrLf & "-Black_Castle_file_name- (" & Form1.blackcastlefile & ")" & vbCrLf & "-White_Bishop_file_name- (" & Form1.whitebishopfile & ")" & vbCrLf & "-Black_Bishop_file_name- (" & Form1.blackbishopfile & ")" & vbCrLf & "-White_Horse_file_name- (" & Form1.whitehorsefile & ")" & vbCrLf & "-Black_Horse_file_name- (" & Form1.blackhorsefile & ")" & vbCrLf & "-White_Queen_file_name- (" & Form1.whitequeenfile & ")" & vbCrLf & "-Black_Queen_file_name- (" & Form1.blackqueenfile & ")" & vbCrLf & "-SquareSelected_file_name- (" & Form1.selectedblankfile & ")" & vbCrLf & "-BlankSquare_file_name- (" & Form1.blankfile & ")" & vbCrLf & "-Display_default_data_- (" & Form1.settings.DisplayDefaultdata & ")" & vbCrLf & "-Display_advanced_data- (" & Form1.settings.DisplayAdvancedData & ")" & vbCrLf & "-UseSetDepthIntBOOL- (" & Form1.settings.UseSetDepth & ")" & vbCrLf & "-SetDepthTime- (" & Form1.settings.DepthSearchTimeMax & ")" & vbCrLf & "-SetDepthMaxINT- (" & Form1.settings.DepthSearchIntegerMax & ")")
+                MAIN_MENU.settings.DisplayDefaultdata = True
+                MAIN_MENU.settings.DisplayAdvancedData = False
+                MAIN_MENU.settings.UseSetDepth = False
+                MAIN_MENU.settings.DepthSearchTimeMax = 30
+                MAIN_MENU.settings.DepthSearchIntegerMax = 4
+
+
+                FileOpen(2, MAIN_MENU.settings.AssetPATH & "MAIN_MENU.settings.txt", OpenMode.Output)
+                default_settings_str = ("-Board_file_name- ( " & "" & ")" & vbCrLf & "-White_Pawn_file_name- (" & Form1.whitepawnfile & ")" & vbCrLf & "-Black_Pawn_file_name- (" & Form1.blackpawnfile & ")" & vbCrLf & "-White_King_file_name- (" & Form1.whitekingfile & ")" & vbCrLf & "-Black_King_file_name- (" & Form1.blackkingfile & ")" & vbCrLf & "-White_Castle_file_name- (" & Form1.whitecastlefile & ")" & vbCrLf & "-Black_Castle_file_name- (" & Form1.blackcastlefile & ")" & vbCrLf & "-White_Bishop_file_name- (" & Form1.whitebishopfile & ")" & vbCrLf & "-Black_Bishop_file_name- (" & Form1.blackbishopfile & ")" & vbCrLf & "-White_Horse_file_name- (" & Form1.whitehorsefile & ")" & vbCrLf & "-Black_Horse_file_name- (" & Form1.blackhorsefile & ")" & vbCrLf & "-White_Queen_file_name- (" & Form1.whitequeenfile & ")" & vbCrLf & "-Black_Queen_file_name- (" & Form1.blackqueenfile & ")" & vbCrLf & "-SquareSelected_file_name- (" & Form1.selectedblankfile & ")" & vbCrLf & "-BlankSquare_file_name- (" & Form1.blankfile & ")" & vbCrLf & "-Display_default_data_- (" & MAIN_MENU.settings.DisplayDefaultdata & ")" & vbCrLf & "-Display_advanced_data- (" & MAIN_MENU.settings.DisplayAdvancedData & ")" & vbCrLf & "-UseSetDepthIntBOOL- (" & MAIN_MENU.settings.UseSetDepth & ")" & vbCrLf & "-SetDepthTime- (" & MAIN_MENU.settings.DepthSearchTimeMax & ")" & vbCrLf & "-SetDepthMaxINT- (" & MAIN_MENU.settings.DepthSearchIntegerMax & ")")
                 PrintLine(2, default_settings_str)
 
             Case False
 
         End Select
         FileClose(2)
-        MsgBox("Created Settings.txt (Settings Reset)")
+        MsgBox("Created MAIN_MENU.settings.txt (Settings Reset)")
     End Sub
 End Module

@@ -33,6 +33,8 @@ Partial Class MAIN_MENU
         Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.LogoutBUTT = New System.Windows.Forms.Button()
         Me.ProfilePictureBox = New System.Windows.Forms.PictureBox()
+        Me.UsernameLabel = New System.Windows.Forms.Label()
+        Me.MMPracticeButt = New System.Windows.Forms.Button()
         CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.ProfilePictureBox, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -68,7 +70,7 @@ Partial Class MAIN_MENU
         'Settingsbutton
         '
         Me.Settingsbutton.Font = New System.Drawing.Font("Microsoft Sans Serif", 16.2!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Settingsbutton.Location = New System.Drawing.Point(12, 530)
+        Me.Settingsbutton.Location = New System.Drawing.Point(12, 510)
         Me.Settingsbutton.Name = "Settingsbutton"
         Me.Settingsbutton.Size = New System.Drawing.Size(128, 63)
         Me.Settingsbutton.TabIndex = 4
@@ -77,9 +79,9 @@ Partial Class MAIN_MENU
         '
         'FEN_CODE_BUTTON
         '
-        Me.FEN_CODE_BUTTON.Location = New System.Drawing.Point(1200, 530)
+        Me.FEN_CODE_BUTTON.Location = New System.Drawing.Point(1200, 510)
         Me.FEN_CODE_BUTTON.Name = "FEN_CODE_BUTTON"
-        Me.FEN_CODE_BUTTON.Size = New System.Drawing.Size(125, 59)
+        Me.FEN_CODE_BUTTON.Size = New System.Drawing.Size(125, 63)
         Me.FEN_CODE_BUTTON.TabIndex = 5
         Me.FEN_CODE_BUTTON.Text = "Use FEN code"
         Me.FEN_CODE_BUTTON.UseVisualStyleBackColor = True
@@ -132,6 +134,23 @@ Partial Class MAIN_MENU
         Me.ProfilePictureBox.TabStop = False
         Me.ProfilePictureBox.Visible = False
         '
+        'UsernameLabel
+        '
+        Me.UsernameLabel.AutoSize = True
+        Me.UsernameLabel.Location = New System.Drawing.Point(1197, 146)
+        Me.UsernameLabel.Name = "UsernameLabel"
+        Me.UsernameLabel.Size = New System.Drawing.Size(0, 17)
+        Me.UsernameLabel.TabIndex = 11
+        '
+        'MMPracticeButt
+        '
+        Me.MMPracticeButt.Location = New System.Drawing.Point(394, 295)
+        Me.MMPracticeButt.Name = "MMPracticeButt"
+        Me.MMPracticeButt.Size = New System.Drawing.Size(638, 64)
+        Me.MMPracticeButt.TabIndex = 12
+        Me.MMPracticeButt.Text = "Practice"
+        Me.MMPracticeButt.UseVisualStyleBackColor = True
+        '
         'MAIN_MENU
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -139,6 +158,9 @@ Partial Class MAIN_MENU
         Me.BackColor = System.Drawing.SystemColors.ActiveCaption
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
         Me.ClientSize = New System.Drawing.Size(1337, 601)
+        Me.ControlBox = False
+        Me.Controls.Add(Me.MMPracticeButt)
+        Me.Controls.Add(Me.UsernameLabel)
         Me.Controls.Add(Me.ProfilePictureBox)
         Me.Controls.Add(Me.LogoutBUTT)
         Me.Controls.Add(Me.PictureBox1)
@@ -171,4 +193,6 @@ Partial Class MAIN_MENU
     Friend WithEvents PictureBox1 As System.Windows.Forms.PictureBox
     Friend WithEvents LogoutBUTT As System.Windows.Forms.Button
     Friend WithEvents ProfilePictureBox As System.Windows.Forms.PictureBox
+    Friend WithEvents UsernameLabel As System.Windows.Forms.Label
+    Friend WithEvents MMPracticeButt As System.Windows.Forms.Button
 End Class

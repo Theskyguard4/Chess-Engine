@@ -1,59 +1,37 @@
 ﻿Public Class Login
-    Private All_Users(0) As PlayerINFO
+
     Private CorrectPassUser As Boolean = False
-    Private Sub Load_All_users()
-        Dim line As String
-        Dim splitline() As String
-        Dim usercount As Integer
-        Dim PP As Image
-
-        FileOpen(1, Form1.AssetFolderPath & "users.txt", OpenMode.Input)
-        Do Until EOF(1)
-            line = LineInput(1)
-
-            If InStr(line, "Username:") > 0 Then
-                All_Users(usercount) = New PlayerINFO
-                splitline = line.Split(":")
-                All_Users(usercount).GameAliasC(splitline(1))
-                splitline = LineInput(1).Split(":")
-                All_Users(usercount).PasswordC(splitline(1))
-                splitline = LineInput(1).Split(":")
-                All_Users(usercount).EloC(splitline(1))
-                splitline = LineInput(1).Split(";")
-                PP = Image.FromFile((splitline(1)))
-                All_Users(usercount).ProfilePictureC(PP)
-                All_Users(usercount).ProfilePicPATH(splitline(1))
-                ReDim Preserve All_Users(All_Users.Length)
-                usercount += 1
-            End If
-        Loop
-
-        FileClose(1)
-    End Sub
+    
     Private Sub EnterSignInBUTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles EnterSignInBUTT.Click
-        Dim IndexOfUser As Integer
-        If All_Users.Length - 1 <> 0 Then
-            For II = 0 To All_Users.Length - 2
-                If All_Users(II).GameAliasC = Me.UsernameTB.Text Then
-                    IndexOfUser = II
+        Dim IndexOfUser As Integer = 0
+        Dim count As Integer = 0
+        If UsernameTB.Text <> "" And PasswordTB.Text <> "" Then
+            For Each User In MAIN_MENU.AllUsersInfoL
+                If User.UserName = UsernameTB.Text Then
+
+                    If User.password = PasswordTB.Text Then
+                        CorrectPassUser = True
+                        IndexOfUser = count
+                        Exit For
+                    End If
                 End If
+                count += 1
             Next
-
-            If All_Users(IndexOfUser).PasswordC = Me.PasswordTB.Text Then
-                CorrectPassUser = True
-            End If
-        Else
-            CorrectPassUser = False
         End If
-       
 
-        If CorrectPassUser Then
+        If CorrectPassUser = True Then
+            Dim TempUser As New PlayerINFO
+            TempUser.GameAliasC(MAIN_MENU.AllUsersInfoL(IndexOfUser).UserName)
+            TempUser.EloC(MAIN_MENU.AllUsersInfoL(IndexOfUser).elo)
+            TempUser.ProfilePictureC(MAIN_MENU.AllUsersInfoL(IndexOfUser).ProfilePicture)
+            TempUser.PasswordC(MAIN_MENU.AllUsersInfoL(IndexOfUser).password)
+            MAIN_MENU.loggedInUser = TempUser
             Me.LoginERRORLabel.ForeColor = Color.LightGreen
             Me.LoginERRORLabel.Text = "Login Successfull!"
-            MsgBox("Loggin Succesfull" & vbCrLf & "User: " & All_Users(IndexOfUser).GameAliasC)
-            Form1.LoggedIn = True
-            Form1.loggedInUser = All_Users(IndexOfUser)
-            MAIN_MENU.DisplayAsLoggedIn(Form1.loggedInUser)
+            MsgBox("Loggin Succesfull" & vbCrLf & "User: " & MAIN_MENU.AllUsersInfoL(IndexOfUser).UserName)
+            MAIN_MENU.LoggedIn = True
+            MAIN_MENU.DisplayAsLoggedIn(MAIN_MENU.loggedInUser)
+
 
             Me.Close()
         Else
@@ -63,7 +41,44 @@
     End Sub
 
     Private Sub Login_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        Load_All_users()
+
         PasswordTB.PasswordChar = "*"
+    End Sub
+
+    Private Sub ImportProfilesButt_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ImportProfilesButt.Click
+        Dim fd As OpenFileDialog = New OpenFileDialog()
+        Dim strFileName As String
+        Dim SelectedDirectoryPath As String = ""
+        Dim Splitline() As String
+        fd.Title = "Open File Dialog"
+        fd.InitialDirectory = "D:\"
+        fd.Filter = "All files (*.*)|*.*|All files (*.*)|*.*"
+        fd.FilterIndex = 2
+        fd.RestoreDirectory = True
+
+        If fd.ShowDialog() = DialogResult.OK Then
+            strFileName = fd.FileName
+        End If
+        Try
+            Splitline = strFileName.Split("\")
+            If InStr(Splitline(Splitline.Length - 2), "CA_USER") > 0 Then
+                For II = 0 To Splitline.Length - 2
+                    SelectedDirectoryPath &= Splitline(II) & "\"
+                Next
+            End If
+        Catch ex As Exception
+            'just continue as normal, exception raised if no file selected
+        End Try
+        
+    End Sub
+
+    
+    
+    Private Sub RegisterBUTT_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles RegisterBUTT.Click
+        RegisterAccount.Show()
+    End Sub
+
+    Private Sub VAPButton_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles VAPButton.Click
+        ListofProfilesDisplay.Show()
     End Sub
 End Class

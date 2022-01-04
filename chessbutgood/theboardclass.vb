@@ -32,6 +32,9 @@
     Public Sub setimageselected()
         Me.piece.setimageselected()
     End Sub
+    Public Sub SetPreviousMove(ByVal ForT As String)
+        Me.piece.DrawPreviousMove(ForT)
+    End Sub
     Public Sub set_value(ByVal values)
         Me.piece.set_value(values)
     End Sub
@@ -648,6 +651,8 @@
                                         End If
 
                                         yy = 0
+                                    ElseIf board(x, y).getteam <> 2 Then
+                                        Exit For
                                     End If
                                     xx -= 1
                                 Else
@@ -684,7 +689,8 @@
 
 
                                         yy = 7
-
+                                    ElseIf board(x, y).getteam <> 2 Then
+                                        Exit For
                                     End If
 
 
@@ -723,10 +729,13 @@
                                         End If
 
                                         yy = 7
+                                    ElseIf board(x, y).getteam <> 2 Then
+                                        Exit For
                                     End If
                                     xx += 1
                                 Else
                                     yy = 7
+
                                 End If
                             Next
 
@@ -754,6 +763,8 @@
                                         End If
 
                                         yy = 0
+                                    ElseIf board(x, y).getteam <> 2 Then
+                                        Exit For
                                     End If
                                     xx += 1
                                 Else
@@ -837,34 +848,10 @@
                             Form1.pinned.piecepinningblack.Add(new_pos)
 
                         End If
-                    ElseIf board(ii, Me.piece.gety).getteam = Me.getteam Then
-                        'If board(ii, Me.piece.gety).getsym = "p" Then
+                    ElseIf board(ii, Me.piece.gety).getteam <> 2 Then
 
-                        '    If board(ii + 1, Me.piece.gety).getsym = "p" Then
-                        '        Select Case board(ii, Me.piece.gety).getteam
-                        '            Case 0
-                        '                If board(ii + 1, Me.piece.gety).getteam = 1 Then
-                        '                    board(ii + 1, Me.piece.gety).set_has_moved_2(False)
-                        '                    board(ii, Me.piece.gety).set_has_moved_2(False)
-                        '                    board(ii + 1, Me.piece.gety).calculatemoves(Form1.board, Me.getteam)
-                        '                    board(ii, Me.piece.gety).calculatemoves(Form1.board, Me.getteam)
-                        '                End If
-                        '            Case 1
-                        '                If board(ii + 1, Me.piece.gety).getteam = 0 Then
-                        '                    board(ii + 1, Me.piece.gety).set_has_moved_2(False)
-                        '                    board(ii, Me.piece.gety).set_has_moved_2(False)
-
-                        '                End If
-
-                        '        End Select
-                        '    End If
-                        'End If
-                        ii = 7
-
-
-
-
-                        End If
+                        Exit For
+                    End If
                 Next
                 x = 7
             Else
@@ -920,8 +907,8 @@
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningblack.Add(new_pos)
                         End If
-                    ElseIf board(ii, Me.piece.gety).getteam = Me.piece.getteam Then
-                        ii = 0
+                    ElseIf board(ii, Me.piece.gety).getteam <> 2 Then
+                        Exit For
                     End If
                 Next
                 Me.piece.addmoves(x, Me.piece.gety, False, False)
@@ -979,8 +966,8 @@
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningblack.Add(new_pos)
                         End If
-                    ElseIf board(Me.piece.getx, ii).getteam = Me.piece.getteam Then
-                        ii = 7
+                    ElseIf board(Me.piece.getx, ii).getteam <> 2 Then
+                        Exit For
                     End If
                 Next
                 y = 7
@@ -1029,8 +1016,8 @@
                             new_pos.y = Me.piece.gety
                             Form1.pinned.piecepinningblack.Add(new_pos)
                         End If
-                    ElseIf board(Me.piece.getx, ii).getteam = Me.piece.getteam Then
-                        ii = 0
+                    ElseIf board(Me.piece.getx, ii).getteam <> 2 Then
+                        Exit For
                     End If
                 Next
                 y = 0

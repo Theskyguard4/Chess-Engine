@@ -32,6 +32,9 @@ Partial Class Login
         Me.ForgotPasswordBUTT = New System.Windows.Forms.Button()
         Me.PictureBox2 = New System.Windows.Forms.PictureBox()
         Me.LoginERRORLabel = New System.Windows.Forms.Label()
+        Me.ImportProfilesButt = New System.Windows.Forms.Button()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.VAPButton = New System.Windows.Forms.Button()
         CType(Me.PictureBox2, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -115,11 +118,42 @@ Partial Class Login
         Me.LoginERRORLabel.Size = New System.Drawing.Size(0, 17)
         Me.LoginERRORLabel.TabIndex = 11
         '
+        'ImportProfilesButt
+        '
+        Me.ImportProfilesButt.Location = New System.Drawing.Point(7, 12)
+        Me.ImportProfilesButt.Name = "ImportProfilesButt"
+        Me.ImportProfilesButt.Size = New System.Drawing.Size(227, 36)
+        Me.ImportProfilesButt.TabIndex = 12
+        Me.ImportProfilesButt.Text = "Import Profiles"
+        Me.ImportProfilesButt.UseVisualStyleBackColor = True
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(8, 51)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(239, 51)
+        Me.Label3.TabIndex = 13
+        Me.Label3.Text = "(When importing a profile please " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " select the Profile picture png in your" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & " save" & _
+            "d user prfile directory)"
+        '
+        'VAPButton
+        '
+        Me.VAPButton.Location = New System.Drawing.Point(4, 251)
+        Me.VAPButton.Name = "VAPButton"
+        Me.VAPButton.Size = New System.Drawing.Size(94, 93)
+        Me.VAPButton.TabIndex = 14
+        Me.VAPButton.Text = "View All Profiles"
+        Me.VAPButton.UseVisualStyleBackColor = True
+        '
         'Login
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(391, 356)
+        Me.Controls.Add(Me.VAPButton)
+        Me.Controls.Add(Me.Label3)
+        Me.Controls.Add(Me.ImportProfilesButt)
         Me.Controls.Add(Me.LoginERRORLabel)
         Me.Controls.Add(Me.PictureBox2)
         Me.Controls.Add(Me.ForgotPasswordBUTT)
@@ -145,4 +179,7 @@ Partial Class Login
     Friend WithEvents ForgotPasswordBUTT As System.Windows.Forms.Button
     Friend WithEvents PictureBox2 As System.Windows.Forms.PictureBox
     Friend WithEvents LoginERRORLabel As System.Windows.Forms.Label
+    Friend WithEvents ImportProfilesButt As System.Windows.Forms.Button
+    Friend WithEvents Label3 As System.Windows.Forms.Label
+    Friend WithEvents VAPButton As System.Windows.Forms.Button
 End Class

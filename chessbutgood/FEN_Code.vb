@@ -40,7 +40,7 @@
                 Case "h"
                     newstring &= "n"
                 Case Else
-                    newstring &= FEN_string(I)
+                    newstring &= FEN(I)
             End Select
         Next
         Return newstring
